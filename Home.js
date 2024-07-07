@@ -2,16 +2,63 @@ import {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Dropdown } from 'react-native-element-dropdown';
 
 export default function Home() {
     const navigation = useNavigation();
+    const [settings, setSettings] = useState(null);
+    const difficulties = [
+        {label: 'Easy', value: 'easy'},
+        {label: 'Medium', value: 'medium'},
+        {label: 'Hard', value: 'hard'},
+        {label: 'Expert', value: 'expert'},
+    ];
+    const [difficulty, setDifficulty] = useState(null);
 
     useEffect(() => {
+        console.log("Effect");
         navigation.setOptions({});
-    });
+        console.log(difficulty);
 
-    function navigateSudoku(){
-        navigation.navigate('Sudoku');
+        if(settings == null){
+            const value = AsyncStorage.getItem('settings').then((value) => {
+                if(value == null){ // Make new settings 
+                    console.log("Making Settings");
+                    const tempSettings = {
+                        difficulty: difficulties[0],
+                        sudoku: null,
+                    }
+                    saveSettings(tempSettings);
+                }
+                else{ // Save settings
+                    const tempSettings = JSON.parse(value);
+                    setSettings(tempSettings);
+                    setDifficulty(tempSettings.difficulty);
+                }
+            });
+        }
+    }, [settings, difficulty]);
+
+    function saveSettings(tempSettings){
+        AsyncStorage.setItem('settings', JSON.stringify(tempSettings));
+        setSettings(tempSettings);
+    }
+    function updateDifficulty(item){
+        console.log("Update difficulty: ", item);
+        setDifficulty(item);
+        let tempSettings = settings;
+        tempSettings.difficulty = item;
+        saveSettings(tempSettings);
+    }
+
+    function navigateSudoku(isContinue){
+        if(isContinue){
+            navigation.navigate('Sudoku', { difficulty: difficulty, sudoku: settings.sudoku});
+        }
+        else{
+            navigation.navigate('Sudoku', {difficulty: difficulty, sudoku: null});
+        }
     }
 
     const styles = StyleSheet.create({
@@ -21,12 +68,31 @@ export default function Home() {
             alignItems: 'center',
             justifyContent: 'center',
         },
+
+        input: {
+            width: 140,
+            margin: 16,
+            height: 50,
+            color: 'black',
+            fontSize: 16,
+            borderBottomColor: 'gray',
+            borderBottomWidth: 0.5,
+      
+        },
+        dropdownSelected: {
+            fontSize: 16,
+            borderColor: 'black',
+            borderStyle: 'solid',
+            borderWidth: 1,
+        }
     });
 
     return (
         <View style={styles.container}>
-            <Text>Open up App.js to start working on your app!</Text>
-            <Button title='Sudoku' onPress={() => navigateSudoku()}/>
+            
+            <Dropdown style={styles.input} selectedTextStyle={styles.dropdownSelected} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
+            {settings !== null && settings.sudoku !== null && <Button title='Continue' onPress={() => navigateSudoku(true)}/>}
+            <Button title='Sudoku' onPress={() => navigateSudoku(false)}/>
 
             <StatusBar style="auto" />
         </View>

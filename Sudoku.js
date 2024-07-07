@@ -4,12 +4,12 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getSudoku } from 'sudoku-gen';
 
-export default function Sudoku() {
-    const navigation = useNavigation();
-    const [sudoku, setSudoku] = useState(null);
+export default function Sudoku({ navigation, route}) {
 
+    const [sudoku, setSudoku] = useState(null);
+    console.log("Sudoku: ", route.params.difficulty.value);
     useEffect(() => {
-        navigation.setOptions({});
+        navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
     });
 
     const styles = StyleSheet.create({
