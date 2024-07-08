@@ -16,7 +16,7 @@ export default function Sudoku({ navigation, route}) {
     });
 
     function buildBoard(){
-        if(route.params.sudoku == null){ // Make new board
+        if(route.params.sudoku == undefined){ // Make new board
             const sudokuStr = getSudoku(route.params.difficulty.value);
             let tempSudoku = {
                 puzzleStr: sudokuStr.puzzle,
@@ -48,15 +48,13 @@ export default function Sudoku({ navigation, route}) {
             saveSudoku(tempSudoku);
         }
         else{ // Remake board
-            AsyncStorage.getItem('sudoku').then((value) => {
-                setSudoku(JSON.parse(value));
-            });
+            setSudoku(route.params.sudoku);
         }
     }
 
-    function saveSudoku(sudoku){
-        setSudoku(sudoku);
-        AsyncStorage.setItem('sudoku', JSON.stringify(sudoku));
+    function saveSudoku(tempSudoku){
+        setSudoku(tempSudoku);
+        AsyncStorage.setItem('sudoku', JSON.stringify(tempSudoku));
     }
 
     function changeFocus(cellId, boxId){

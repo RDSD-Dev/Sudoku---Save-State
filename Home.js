@@ -8,6 +8,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 export default function Home() {
     const navigation = useNavigation();
     const [settings, setSettings] = useState(null);
+    const [sudoku, setSudoku] = useState(null);
     const difficulties = [
         {label: 'Easy', value: 'easy'},
         {label: 'Medium', value: 'medium'},
@@ -17,6 +18,13 @@ export default function Home() {
     const [difficulty, setDifficulty] = useState(null);
 
     useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if(sudoku == null){
+                AsyncStorage.getItem('sudoku').then((value) => {
+                    setSudoku(JSON.parse(value));
+                });
+            }
+          });
         navigation.setOptions({});
         if(settings == null){
             const value = AsyncStorage.getItem('settings').then((value) => {
@@ -50,10 +58,11 @@ export default function Home() {
 
     function navigateSudoku(isContinue){
         if(isContinue){
-            navigation.navigate('Sudoku', { difficulty: difficulty, sudoku: settings.sudoku});
+            navigation.navigate('Sudoku', { difficulty: difficulty, sudoku: sudoku});
         }
         else{
-            navigation.navigate('Sudoku', {difficulty: difficulty, sudoku: null});
+            setSudoku(null);
+            navigation.navigate('Sudoku', {difficulty: difficulty});
         }
     }
 
@@ -87,7 +96,7 @@ export default function Home() {
         <View style={styles.container}>
             
             <Dropdown style={styles.input} selectedTextStyle={styles.dropdownSelected} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
-            {settings !== null && settings.sudoku !== null && <Button title='Continue' onPress={() => navigateSudoku(true)}/>}
+            {sudoku !== null && sudoku !== '' && <Button title='Continue' onPress={() => navigateSudoku(true)}/>}
             <Button title='Sudoku' onPress={() => navigateSudoku(false)}/>
 
             <StatusBar style="auto" />
