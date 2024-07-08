@@ -17,10 +17,7 @@ export default function Home() {
     const [difficulty, setDifficulty] = useState(null);
 
     useEffect(() => {
-        console.log("Effect");
         navigation.setOptions({});
-        console.log(difficulty);
-
         if(settings == null){
             const value = AsyncStorage.getItem('settings').then((value) => {
                 if(value == null){ // Make new settings 
@@ -45,7 +42,6 @@ export default function Home() {
         setSettings(tempSettings);
     }
     function updateDifficulty(item){
-        console.log("Update difficulty: ", item);
         setDifficulty(item);
         let tempSettings = settings;
         tempSettings.difficulty = item;
