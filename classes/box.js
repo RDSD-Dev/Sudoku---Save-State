@@ -22,21 +22,21 @@ export default class Box{
     displayBox(){
         if(this.current == this.solution){ // Display Solution
             return(
-                <View>
+                <View style={this.styles.box}>
                     <Text>{this.solution}</Text>
                 </View>
             );
         }
         else if(this.current == '-' ){ // Display Current
             return(
-                <View>
+                <View style={this.styles.box}>
                     <Text>{this.current}</Text>
                 </View>
             );
         }
         else{ // Display Temp
             return(
-                <View>
+                <View style={this.styles.box}>
                     <Text>Temp</Text>
                 </View>
             );
@@ -44,15 +44,15 @@ export default class Box{
     }
 
     styles = StyleSheet.create({
-        container: {
+        box: {
             borderColor: 'grey',
             borderWidth: 1,
             borderStyle: 'solid',
-            padding: 8,
-            margin: 8,
-
+            padding: 4,
+            margin: 0,
+            width: '30%',
             alignItems: 'center',
-            justifyContent: 'center',
+            alignSelf: 'center',
         },
     });
 }

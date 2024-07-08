@@ -12,7 +12,7 @@ export default class Cell{
 
     displayCell(){
         return(
-            <View style={this.cell}>
+            <View style={this.styles.cell}>
                 <View style={this.styles.row}>
                     {this.boxes[0].displayBox()}
                     {this.boxes[1].displayBox()}
@@ -34,13 +34,15 @@ export default class Cell{
 
     styles = StyleSheet.create({
         cell: {
+            padding: 2,
+            width: '30%',
+            margin: 0,
             borderColor: 'black',
             borderStyle: 'solid',
-            borderWidth: 2,
-            backgroundColor: '#fff',
+            borderWidth: 1,
             alignItems: 'center',
-            padding: 12,
-            margin: 8,
+            justifyContent: 'center',
+            alignSelf: 'center'
         },
 
         row: {

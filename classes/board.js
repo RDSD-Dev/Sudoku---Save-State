@@ -74,6 +74,8 @@ export default class Board{
             alignSelf: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
+            width: '96%',
+            alignItems: 'center',
         },
         row: {
             flexDirection: 'row',
