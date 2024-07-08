@@ -9,8 +9,8 @@ export default function Sudoku({ navigation, route}) {
     const [focus, setFocus] = useState(null);
 
     useEffect(() => {
-        navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
         if(sudoku == null){
+            navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
             buildBoard();
         }
     });
@@ -51,7 +51,6 @@ export default function Sudoku({ navigation, route}) {
             setSudoku(route.params.sudoku);
         }
     }
-
     function saveSudoku(tempSudoku){
         setSudoku(tempSudoku);
         AsyncStorage.setItem('sudoku', JSON.stringify(tempSudoku));
@@ -209,7 +208,6 @@ export default function Sudoku({ navigation, route}) {
     
 
     });
-
     return (
         <View style={styles.container}>
             {sudoku !== null && displayBoard()}
@@ -217,7 +215,6 @@ export default function Sudoku({ navigation, route}) {
             <StatusBar style="auto" />
         </View>
     );
-
 }
 
 

@@ -25,6 +25,7 @@ export default function Home() {
                 });
             }
           });
+
         navigation.setOptions({});
         if(settings == null){
             const value = AsyncStorage.getItem('settings').then((value) => {
@@ -58,7 +59,7 @@ export default function Home() {
 
     function navigateSudoku(isContinue){
         if(isContinue){
-            navigation.navigate('Sudoku', { difficulty: difficulty, sudoku: sudoku});
+            navigation.navigate('Sudoku', { difficulty: difficulties.find((e) => e.value == sudoku.difficulty), sudoku: sudoku});
         }
         else{
             setSudoku(null);
