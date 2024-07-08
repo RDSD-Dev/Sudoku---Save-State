@@ -9,7 +9,6 @@ export default function Sudoku({ navigation, route}) {
     const [focus, setFocus] = useState(null);
 
     useEffect(() => {
-        console.log("Focused: ", focus);
         navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
         if(sudoku == null){
             buildBoard();
@@ -63,6 +62,12 @@ export default function Sudoku({ navigation, route}) {
     function changeFocus(cellId, boxId){
         console.log("Focus: ", cellId, " Box: ", boxId);
         setFocus([cellId, boxId]);
+    }
+    function placeNumber(number){
+        const box = sudoku.cells[focus[0]][focus[1]];
+        if(box!== undefined && box.current !== box.solution){
+            console.log("Box: ", focus[0], " ", focus[1], " : ", number);
+        }
     }
 
     function displayBoard(){
@@ -149,6 +154,22 @@ export default function Sudoku({ navigation, route}) {
         }
     }
 
+    function displayNumbers(){
+        return(
+            <View style={styles.numbers}>
+                <Button title='1' onPress={() => placeNumber(1)}/>
+                <Button title='2' onPress={() => placeNumber(2)}/>
+                <Button title='3' onPress={() => placeNumber(3)}/>
+                <Button title='4' onPress={() => placeNumber(4)}/>
+                <Button title='5' onPress={() => placeNumber(5)}/>
+                <Button title='6' onPress={() => placeNumber(6)}/>
+                <Button title='7' onPress={() => placeNumber(7)}/>
+                <Button title='8' onPress={() => placeNumber(8)}/>
+                <Button title='9' onPress={() => placeNumber(9)}/>
+            </View>
+        );
+    }
+
     const styles = StyleSheet.create({
         board: {
             borderColor: 'blue',
@@ -160,7 +181,6 @@ export default function Sudoku({ navigation, route}) {
             width: '96%',
             alignItems: 'center',
         },
-
         cell: {
             padding: 8,
             margin: 8,
@@ -171,7 +191,6 @@ export default function Sudoku({ navigation, route}) {
             justifyContent: 'center',
             alignSelf: 'center'
         },
-
         box: {
             borderColor: 'grey',
             borderWidth: 1,
@@ -181,16 +200,22 @@ export default function Sudoku({ navigation, route}) {
             alignItems: 'center',
             alignSelf: 'center',
         },
-        
         row: {
             flexDirection: 'row',
-        }
+        },
+
+        numbers: {
+            flexDirection: 'row',
+            alignContent: 'center',
+        },
+    
 
     });
 
     return (
         <View style={styles.container}>
             {sudoku !== null && displayBoard()}
+            {displayNumbers()}
             <StatusBar style="auto" />
         </View>
     );
