@@ -6,9 +6,15 @@ import Cell from './classes/cell';
 import Box from './classes/box';
 
 export default function Sudoku({ navigation, route}) {
-
     const [sudoku, setSudoku] = useState(null);
+    const [current, setCurrent] = useState(null);
+
     useEffect(() => {
+        if(sudoku !== null){
+            setCurrent(sudoku.focus);
+            console.log("Current: ", current);
+        }
+
         navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
         if(sudoku == null){
             if(route.params.sudoku == null){ // Make new board

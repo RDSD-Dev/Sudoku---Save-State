@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default class Box{
-    constructor(id, current, solution){
+    constructor(id, cellId,  current, solution){
+        this.isFocus;
         this.id = id;
+        this.cellId = cellId;
         this.current = current;
         this.solution = solution;
         this.temp = [];
@@ -17,7 +19,6 @@ export default class Box{
     removeTemp(temp){
 
     }
-
 
     displayBox(){
         if(this.current == this.solution){ // Display Solution
@@ -50,7 +51,6 @@ export default class Box{
             borderStyle: 'solid',
             padding: 4,
             margin: 0,
-            width: '30%',
             alignItems: 'center',
             alignSelf: 'center',
         },

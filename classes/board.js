@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import { getSudoku } from 'sudoku-gen';
 import Cell from './cell';
 import Box from './box';
@@ -6,12 +6,12 @@ import Box from './box';
 export default class Board{
     constructor(difficulty, boardStr){
         if(boardStr == undefined){ // Generate new board
+            this.focus = null;
             const tempSudoku = getSudoku(difficulty);
             this.puzzleStr = tempSudoku.puzzle;
             this.solutionStr = tempSudoku.solution;
             let celArr = [[], [], [], [], [], [], [], [], []];
             let solArr = [[], [], [], [], [], [], [], [], []];
-            let idArr = [[], [], [], [], [], [], [], [], []];
             let currentCell = 0;
             for(let i=0; i< tempSudoku.puzzle.length; i++){
                 const currentPuzzle = tempSudoku.puzzle[i];
@@ -32,11 +32,10 @@ export default class Board{
                 }
                 celArr[currentCell].push(currentPuzzle);
                 solArr[currentCell].push(currentSolution);
-                idArr[currentCell].push(i);
             }
             this.cells = [];
             for(let i=0; i<9; i++){
-                this.cells.push(new Cell(i,idArr[i], celArr[i], solArr[i]));
+                this.cells.push(new Cell(i, celArr[i], solArr[i]));
             }
         }
         else{ // Remake old board
@@ -44,23 +43,68 @@ export default class Board{
         }
     }
 
+    setFocus(cellId, boxId){
+        console.log("Focus: ", cellId, " Box: ", boxId);
+        this.focus = [cellId, boxId];
+    }
+
+    displayCell(cell){
+        return(
+            <View style={this.styles.cell}>
+                <View style={this.styles.row}>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[0].id)}>
+                        {cell.boxes[0].displayBox()}
+                    </Pressable>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[1].id)}>
+                        {cell.boxes[1].displayBox()}
+                    </Pressable>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[2].id)}>
+                        {cell.boxes[2].displayBox()}
+                    </Pressable>
+                </View>
+                <View style={this.styles.row}>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[3].id)}>
+                        {cell.boxes[3].displayBox()}
+                    </Pressable>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[4].id)}>
+                        {cell.boxes[4].displayBox()}
+                    </Pressable>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[5].id)}>
+                        {cell.boxes[5].displayBox()}
+                    </Pressable>
+                </View>
+                <View style={this.styles.row}>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[6].id)}>
+                        {cell.boxes[6].displayBox()}
+                    </Pressable>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[7].id)}>
+                        {cell.boxes[7].displayBox()}
+                    </Pressable>
+                    <Pressable onPress={() => this.setFocus(cell.id, cell.boxes[8].id)}>
+                        {cell.boxes[8].displayBox()}
+                    </Pressable>
+                </View>
+            </View>
+        );
+    }
+
     displayBoard(){
         return(
             <View style={this.styles.board}>
                 <View style={this.styles.row}>
-                    {this.cells[0].displayCell()}
-                    {this.cells[1].displayCell()}
-                    {this.cells[2].displayCell()}
+                    {this.displayCell(this.cells[0])}
+                    {this.displayCell(this.cells[1])}
+                    {this.displayCell(this.cells[2])}
                 </View>
                 <View style={this.styles.row}>
-                    {this.cells[3].displayCell()}
-                    {this.cells[4].displayCell()}
-                    {this.cells[5].displayCell()}
+                    {this.displayCell(this.cells[3])}
+                    {this.displayCell(this.cells[4])}
+                    {this.displayCell(this.cells[5])}
                 </View>
                 <View style={this.styles.row}>
-                    {this.cells[6].displayCell()}
-                    {this.cells[7].displayCell()}
-                    {this.cells[8].displayCell()}
+                    {this.displayCell(this.cells[6])}
+                    {this.displayCell(this.cells[7])}
+                    {this.displayCell(this.cells[8])}
                 </View>
             </View>
         );
@@ -77,6 +121,18 @@ export default class Board{
             width: '96%',
             alignItems: 'center',
         },
+
+        cell: {
+            padding: 8,
+            margin: 8,
+            borderColor: 'black',
+            borderStyle: 'solid',
+            borderWidth: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center'
+        },
+        
         row: {
             flexDirection: 'row',
         }
