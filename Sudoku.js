@@ -68,9 +68,13 @@ export default function Sudoku({ navigation, route}) {
         if(box!== null && box.current !== box.solution){
             setRefresh(refresh + ' ');
             let tempSudoku = sudoku;
-            tempSudoku.cells[focus[0]][focus[1]].current = number;
-            saveSudoku(tempSudoku);
-            console.log("Box: ", focus[0], " ", focus[1], " : ", number);
+            if(isTemp){
+                
+            }
+            else{
+                tempSudoku.cells[focus[0]][focus[1]].current = number;
+                saveSudoku(tempSudoku);
+            }
         }
     }
 
@@ -161,8 +165,15 @@ export default function Sudoku({ navigation, route}) {
         }
     }
     function displayTemp(box){
+        let display = [' ',' ',' ',' ',' ',' ',' ',' ',' '];
+        for(let i=0; i< box.temp.length; i++){
+            const num = box.temp[i];
+            display[num-1] = JSON.stringify(num);
+        }
         return(
-            <Text> pp</Text>
+            <View style={styles.tempNums}>
+                
+            </View>
         );
     }
 
@@ -224,6 +235,9 @@ export default function Sudoku({ navigation, route}) {
             alignItems: 'center',
             alignSelf: 'center',
             backgroundColor: 'blue',
+        },
+        tempNums: {
+
         },
 
         numbers: {
