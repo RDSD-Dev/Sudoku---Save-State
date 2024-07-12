@@ -2,18 +2,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import Checkbox from 'expo-checkbox';
 import { getSudoku } from 'sudoku-gen';
 
 export default function Sudoku({ navigation, route}) {
     const [sudoku, setSudoku] = useState(null);
     const [focus, setFocus] = useState(null);
+    const [isTemp, setIsTemp] = useState(false);
+    const [refresh, setRefresh] = useState('');
 
     useEffect(() => {
         if(sudoku == null){
             navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
             buildBoard();
         }
-    });
+    }, [focus, refresh]);
 
     function buildBoard(){
         if(route.params.sudoku == undefined){ // Make new board
@@ -57,12 +60,16 @@ export default function Sudoku({ navigation, route}) {
     }
 
     function changeFocus(cellId, boxId){
-        console.log("Focus: ", cellId, " Box: ", boxId);
+        setRefresh('');
         setFocus([cellId, boxId]);
     }
     function placeNumber(number){
         const box = sudoku.cells[focus[0]][focus[1]];
-        if(box!== undefined && box.current !== box.solution){
+        if(box!== null && box.current !== box.solution){
+            setRefresh(refresh + ' ');
+            let tempSudoku = sudoku;
+            tempSudoku.cells[focus[0]][focus[1]].current = number;
+            saveSudoku(tempSudoku);
             console.log("Box: ", focus[0], " ", focus[1], " : ", number);
         }
     }
@@ -130,25 +137,33 @@ export default function Sudoku({ navigation, route}) {
     function displayBox(box){
         if(box.current == box.solution){ // Display Solution
             return(
-                <View style={styles.box}>
-                    <Text>{box.solution}</Text>
+                <View>
+                    {focus !== null && focus[0] == box.cellId && focus[1] == box.id && <Text style={styles.highlightBox}>{box.current}</Text>}
+                    {(focus== null || focus[0] !== box.cellId || focus[1] !== box.id) && <Text style={styles.box}>{box.current}</Text>}
                 </View>
             );
         }
-        else if(box.current == '-' ){ // Display Current
+        if(box.current !== '-'){
             return(
-                <View style={styles.box}>
-                    <Text>{box.current}</Text>
+                <View>
+                    {focus !== null && focus[0] == box.cellId && focus[1] == box.id && <Text style={styles.highlightBox}>{box.current}</Text>}
+                    {(focus == null || focus[0] !== box.cellId || focus[1] !== box.id) && <Text style={styles.box}>{box.current}</Text>}
                 </View>
             );
         }
         else{ // Display Temp
             return(
-                <View style={styles.box}>
-                    <Text>Temp</Text>
+                <View>
+                    {focus !== null && focus[0] == box.cellId && focus[1] == box.id && <Text style={styles.highlightBox}>{displayTemp(box)}</Text>}
+                    {(focus== null || focus[0] !== box.cellId || focus[1] !== box.id) && <Text style={styles.box}>{displayTemp(box)}</Text>}
                 </View>
             );
         }
+    }
+    function displayTemp(box){
+        return(
+            <Text> pp</Text>
+        );
     }
 
     function displayNumbers(){
@@ -193,12 +208,22 @@ export default function Sudoku({ navigation, route}) {
             borderWidth: 1,
             borderStyle: 'solid',
             padding: 4,
-            margin: 0,
+            margin: 1,
             alignItems: 'center',
             alignSelf: 'center',
         },
         row: {
             flexDirection: 'row',
+        },
+        highlightBox: {
+            borderColor: 'black',
+            borderWidth: 2,
+            borderStyle: 'solid',
+            padding: 4,
+            margin: 0,
+            alignItems: 'center',
+            alignSelf: 'center',
+            backgroundColor: 'blue',
         },
 
         numbers: {
@@ -211,6 +236,7 @@ export default function Sudoku({ navigation, route}) {
     return (
         <View style={styles.container}>
             {sudoku !== null && displayBoard()}
+            <Checkbox style={styles.checkbox} value={isTemp} onValueChange={setIsTemp} />
             {displayNumbers()}
             <StatusBar style="auto" />
         </View>
