@@ -268,7 +268,7 @@ export default function Sudoku({ navigation, route}) {
             padding: 1,
             alignItems: 'center',
             alignSelf: 'center',
-            backgroundColor: 'blue',
+            backgroundColor: 'light-blue',
             width: boxWidth,
             height: boxWidth
         },
