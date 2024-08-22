@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, Pressable, Dimensions } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { getSudoku } from 'sudoku-gen';
 
@@ -9,6 +9,7 @@ export default function Sudoku({ navigation, route}) {
     const [sudoku, setSudoku] = useState(null);
     const [focus, setFocus] = useState(null);
     const [isTemp, setIsTemp] = useState(false);
+    const [isLock, setIsLock] = useState(false);
     const [refresh, setRefresh] = useState('');
 
     useEffect(() => {
@@ -26,6 +27,7 @@ export default function Sudoku({ navigation, route}) {
                 solutionStr: sudokuStr.solution,
                 difficulty: sudokuStr.difficulty,
                 cells: [[], [], [], [], [], [], [], [], []],
+                mistakes: 0,
             };
             let currentCell = 0;
             for(let i=0; i< sudokuStr.puzzle.length; i++){
@@ -65,16 +67,26 @@ export default function Sudoku({ navigation, route}) {
     }
     function placeNumber(number){
         const box = sudoku.cells[focus[0]][focus[1]];
-        if(box!== null && box.current !== box.solution){
-            setRefresh(refresh + ' ');
+        if(box!== null && box.current != box.solution){
             let tempSudoku = sudoku;
             if(isTemp){
-                
+                const tempIndex = tempSudoku.cells[focus[0]][focus[1]].temp.findIndex((e) => e == number);
+                if(tempIndex == -1){
+                    tempSudoku.cells[focus[0]][focus[1]].temp.push(number);
+                }
+                else{
+                    tempSudoku.cells[focus[0]][focus[1]].temp.splice(tempIndex, 1);
+                }
+                saveSudoku(tempSudoku);
             }
             else{
                 tempSudoku.cells[focus[0]][focus[1]].current = number;
+                if(number != tempSudoku.cells[focus[0]][focus[1]].solution){
+                    tempSudoku.mistakes++;
+                }
                 saveSudoku(tempSudoku);
             }
+            setRefresh(refresh + ' ');
         }
     }
 
@@ -172,27 +184,50 @@ export default function Sudoku({ navigation, route}) {
         }
         return(
             <View style={styles.tempNums}>
-                
+                <View style={styles.row}>
+                    <Text style={styles.tempNums}>{display[0]}</Text>
+                    <Text style={styles.tempNums}>{display[1]}</Text>
+                    <Text style={styles.tempNums}>{display[2]}</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.tempNums}>{display[3]}</Text>
+                    <Text style={styles.tempNums}>{display[4]}</Text>
+                    <Text style={styles.tempNums}>{display[5]}</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.tempNums}>{display[6]}</Text>
+                    <Text style={styles.tempNums}>{display[7]}</Text>
+                    <Text style={styles.tempNums}>{display[8]}</Text>
+                </View>
             </View>
         );
     }
 
+    function displayButton(title, onPress){
+        return(
+            <Pressable onPress={onPress}>
+                <Text style={styles.number}>{title}</Text>
+            </Pressable>
+        );
+    }
     function displayNumbers(){
         return(
             <View style={styles.numbers}>
-                <Button title='1' onPress={() => placeNumber(1)}/>
-                <Button title='2' onPress={() => placeNumber(2)}/>
-                <Button title='3' onPress={() => placeNumber(3)}/>
-                <Button title='4' onPress={() => placeNumber(4)}/>
-                <Button title='5' onPress={() => placeNumber(5)}/>
-                <Button title='6' onPress={() => placeNumber(6)}/>
-                <Button title='7' onPress={() => placeNumber(7)}/>
-                <Button title='8' onPress={() => placeNumber(8)}/>
-                <Button title='9' onPress={() => placeNumber(9)}/>
+                {displayButton('1', () => placeNumber(1))}
+                {displayButton('2', () => placeNumber(2))}
+                {displayButton('3', () => placeNumber(3))}
+                {displayButton('4', () => placeNumber(4))}
+                {displayButton('5', () => placeNumber(5))}
+                {displayButton('6', () => placeNumber(6))}
+                {displayButton('7', () => placeNumber(7))}
+                {displayButton('8', () => placeNumber(8))}
+                {displayButton('9', () => placeNumber(9))}
             </View>
         );
     }
 
+    const windowWidth = Dimensions.get('window').width;
+    const boxWidth = (windowWidth)/10;
     const styles = StyleSheet.create({
         board: {
             borderColor: 'blue',
@@ -201,27 +236,27 @@ export default function Sudoku({ navigation, route}) {
             alignSelf: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
-            width: '96%',
+            width: '100%',
             alignItems: 'center',
         },
         cell: {
-            padding: 8,
-            margin: 8,
             borderColor: 'black',
             borderStyle: 'solid',
             borderWidth: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            alignSelf: 'center'
+            alignSelf: 'center',
         },
         box: {
             borderColor: 'grey',
             borderWidth: 1,
             borderStyle: 'solid',
-            padding: 4,
-            margin: 1,
+            justifyContent: 'center',
+            padding: 1,
             alignItems: 'center',
             alignSelf: 'center',
+            width: boxWidth,
+            height: boxWidth
         },
         row: {
             flexDirection: 'row',
@@ -230,27 +265,47 @@ export default function Sudoku({ navigation, route}) {
             borderColor: 'black',
             borderWidth: 2,
             borderStyle: 'solid',
-            padding: 4,
-            margin: 0,
+            padding: 1,
             alignItems: 'center',
             alignSelf: 'center',
             backgroundColor: 'blue',
+            width: boxWidth,
+            height: boxWidth
         },
         tempNums: {
-
+            fontSize: 10,
         },
 
         numbers: {
             flexDirection: 'row',
-            alignContent: 'center',
+            justifyContent: 'center',
+            width: '100%',
+
         },
-    
+        number: {
+            fontSize: 32,
+            borderWidth: 1,
+            borderColor: 'black',
+            paddingHorizontal: 4,
+            marginHorizontal: 4,
+            marginVertical: 4,
+        },
 
     });
     return (
         <View style={styles.container}>
+            {sudoku !== null && <Text>{sudoku.mistakes}</Text>}
             {sudoku !== null && displayBoard()}
-            <Checkbox style={styles.checkbox} value={isTemp} onValueChange={setIsTemp} />
+            <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
+                <View style={[styles.row]}>
+                    <Text>Pencil</Text>
+                    <Checkbox style={styles.checkbox} value={isTemp} onValueChange={setIsTemp} />
+                </View>
+                <View style={[styles.row]}>
+                    <Text>Lock</Text>
+                    <Checkbox style={styles.checkbox} value={isLock} onValueChange={setIsLock} />
+                </View>
+            </View>
             {displayNumbers()}
             <StatusBar style="auto" />
         </View>
