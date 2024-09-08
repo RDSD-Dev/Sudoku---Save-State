@@ -47,7 +47,76 @@ export default function Sudoku({ navigation, route}) {
                         currentCell++;
                     }
                 }
-                const tempBox = {id: tempSudoku.cells[currentCell].length, cellId: currentCell, current: currentPuzzle, solution: currentSolution, temp: []};
+
+                let tempBox = {id: tempSudoku.cells[currentCell].length, cellId: currentCell, current: currentPuzzle, solution: currentSolution, temp: []};
+                if(tempBox.cellId == 0 || tempBox.cellId == 3|| tempBox.cellId == 6){
+                    if(tempBox.id == 0 || tempBox.id == 3 || tempBox.id == 6){
+                        tempBox.colum = 0;
+                    }
+                    else if(tempBox.id == 1 || tempBox.id == 4 || tempBox.id == 7){
+                        tempBox.colum = 1;
+                    }
+                    else if(tempBox.id == 2 || tempBox.id == 5 || tempBox.id == 8){
+                        tempBox.colum = 2;
+                    }
+                }
+                else if(tempBox.cellId == 1 || tempBox.cellId == 4|| tempBox.cellId == 7){
+                    if(tempBox.id == 0 || tempBox.id == 3 || tempBox.id == 6){
+                        tempBox.colum = 3;
+                    }
+                    else if(tempBox.id == 1 || tempBox.id == 4 || tempBox.id == 7){
+                        tempBox.colum = 4;
+                    }
+                    else if(tempBox.id == 2 || tempBox.id == 5 || tempBox.id == 8){
+                        tempBox.colum = 5;
+                    }
+                }
+                else if(tempBox.cellId == 2 || tempBox.cellId == 5|| tempBox.cellId == 8){
+                    if(tempBox.id == 0 || tempBox.id == 3 || tempBox.id == 6){
+                        tempBox.colum = 6;
+                    }
+                    else if(tempBox.id == 1 || tempBox.id == 4 || tempBox.id == 7){
+                        tempBox.colum = 7;
+                    }
+                    else if(tempBox.id == 2 || tempBox.id == 5 || tempBox.id == 8){
+                        tempBox.colum = 8;
+                    }
+                }
+
+                if(currentCell == 0 || currentCell == 1 || currentCell == 2){
+                    if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
+                        tempBox.row = 0;
+                    }
+                    else if(tempBox.id == 3 || tempBox.id == 4 || tempBox.id == 5){
+                        tempBox.row = 1;
+                    }
+                    else if(tempBox.id == 6 || tempBox.id == 7 || tempBox.id == 8){
+                        tempBox.row = 2;
+                    }
+                }
+                else if(currentCell == 3 || currentCell == 4 || currentCell == 5){
+                    if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
+                        tempBox.row = 3;
+                    }
+                    else if(tempBox.id == 3 || tempBox.id == 4 || tempBox.id == 5){
+                        tempBox.row = 4;
+                    }
+                    else if(tempBox.id == 6 || tempBox.id == 7 || tempBox.id == 8){
+                        tempBox.row = 5;
+                    }
+                }
+                else if(currentCell == 6 || currentCell == 7 || currentCell == 8){
+                    if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
+                        tempBox.row = 6;
+                    }
+                    else if(tempBox.id == 3 || tempBox.id == 4 || tempBox.id == 5){
+                        tempBox.row = 7;
+                    }
+                    else if(tempBox.id == 6 || tempBox.id == 7 || tempBox.id == 8){
+                        tempBox.row = 8;
+                    }
+                }
+
                 tempSudoku.cells[currentCell].push(tempBox);
             }
             saveSudoku(tempSudoku);
@@ -64,6 +133,7 @@ export default function Sudoku({ navigation, route}) {
     function changeFocus(cellId, boxId){
         setRefresh('');
         setFocus([cellId, boxId]);
+        console.log(sudoku.cells[cellId][boxId]);
     }
     function placeNumber(number){
         const box = sudoku.cells[focus[0]][focus[1]];
