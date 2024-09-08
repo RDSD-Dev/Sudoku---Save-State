@@ -84,7 +84,7 @@ export default function Sudoku({ navigation, route}) {
                     }
                 }
 
-                if(currentCell == 0 || currentCell == 1 || currentCell == 2){
+                if(tempBox.cellId == 0 || tempBox.cellId == 1 || tempBox.cellId == 2){
                     if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
                         tempBox.row = 0;
                     }
@@ -95,7 +95,7 @@ export default function Sudoku({ navigation, route}) {
                         tempBox.row = 2;
                     }
                 }
-                else if(currentCell == 3 || currentCell == 4 || currentCell == 5){
+                else if(tempBox.cellId == 3 || tempBox.cellId == 4 || tempBox.cellId == 5){
                     if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
                         tempBox.row = 3;
                     }
@@ -106,7 +106,7 @@ export default function Sudoku({ navigation, route}) {
                         tempBox.row = 5;
                     }
                 }
-                else if(currentCell == 6 || currentCell == 7 || currentCell == 8){
+                else if(tempBox.cellId == 6 || tempBox.cellId == 7 || tempBox.cellId == 8){
                     if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
                         tempBox.row = 6;
                     }
@@ -134,7 +134,22 @@ export default function Sudoku({ navigation, route}) {
     function changeFocus(boxId){
         setRefresh('');
         setFocus(boxId);
-        
+        const box = sudoku.boxes.find((e) => e.id == boxId);
+        const cell = sudoku.boxes.filter((e) => (e.cellId == box.cellId));
+        const row = sudoku.boxes.filter((e) => (e.row == box.row));
+        const colum = sudoku.boxes.filter((e) => (e.colum == box.colum));
+        console.log('Box: ', box, " Cell: ", cell, " Row: ", row, " Colum: ", colum);
+        let highlight = [];
+        for(let i=0; i<cell.length; i++){
+            highlight.push(cell[i]);
+        }
+        for(let i=0; i<row.length; i++){
+            highlight.push(row[i]);
+        }
+        for(let i=0; i<colum.length; i++){
+            highlight.push(colum[i]);
+        }
+        setHighlighted(highlight);
     }
     function placeNumber(number){
         const box = sudoku.boxes.find((e) => e.id == focus);
@@ -224,9 +239,13 @@ export default function Sudoku({ navigation, route}) {
         );
     }
     function displayBox(box){
+        let style;
+        if(highlighted !== null && highlighted.findIndex((e) => e.id == box.id) !== -1){
+            style = styles.highlightBox;
+        }
         if(box.current == box.solution){ // Display Solution
             return(
-                <View>
+                <View style={style}>
                     {focus !== null && focus == box.id && <Text style={styles.highlightBox}>{box.current}</Text>}
                     {(focus== null || focus !== box.id) && <Text style={styles.box}>{box.current}</Text>}
                 </View>
@@ -234,7 +253,7 @@ export default function Sudoku({ navigation, route}) {
         }
         if(box.current !== '-'){
             return(
-                <View>
+                <View style={style}>
                     {focus !== null && focus == box.id && <Text style={styles.highlightBox}>{box.current}</Text>}
                     {(focus == null || focus !== box.id) && <Text style={styles.box}>{box.current}</Text>}
                 </View>
@@ -242,7 +261,7 @@ export default function Sudoku({ navigation, route}) {
         }
         else{ // Display Temp
             return(
-                <View>
+                <View style={style}>
                     {focus !== null && focus == box.id && <Text style={styles.highlightBox}>{displayTemp(box)}</Text>}
                     {(focus== null || focus !== box.id) && <Text style={styles.box}>{displayTemp(box)}</Text>}
                 </View>
