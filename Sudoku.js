@@ -89,6 +89,8 @@ export default function Sudoku({ navigation, route}) {
         if(isTemp && hasNumber.length !== 0){
             return;
         }
+
+
         placeNumber(number);
     }
     function placeNumber(number, boxId){
@@ -112,7 +114,20 @@ export default function Sudoku({ navigation, route}) {
             }
             else{
                 tempSudoku.boxes[boxIndex].current = number;
-                if(number != tempSudoku.boxes[boxIndex].solution){
+                if(box.solution == number){
+                    let hasNumber = sudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
+                    hasNumber = hasNumber.filter((e) => e.solution !== e.current && e.temp.indexOf(number) !== -1);
+                    console.log('Temp? ', hasNumber);
+                    for(let i=0; i<hasNumber.length; i++){
+                        const index = tempSudoku.boxes.indexOf(hasNumber[i]);
+                        const tempIndex = tempSudoku.boxes[index].temp.indexOf(number);
+                        console.log('Splice: ', tempSudoku.boxes[index], 'Index: ', tempIndex);
+                        tempSudoku.boxes[index].temp.splice(tempIndex, 1);
+                        console.log('Splice: ', tempSudoku.boxes[index], 'Index: ', tempIndex);
+
+                    }
+                }
+                else if(tempSudoku.boxes[boxIndex].current !== tempSudoku.boxes[boxIndex].solution){
                     tempSudoku.mistakes++;
                 }
                 saveSudoku(tempSudoku);
@@ -144,6 +159,7 @@ export default function Sudoku({ navigation, route}) {
                 for(let y=0; y<stateBox.temp.length; y++){
                     let hasNumber = tempSudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
                     hasNumber = hasNumber.filter((e) => e.current == stateBox.temp[y] && e.solution == stateBox.temp[y]);
+                    console.log(hasNumber);
                     if(hasNumber.length == 0){
                         tempSudoku.boxes[index].temp.push(stateBox.temp[y]);
                     }
