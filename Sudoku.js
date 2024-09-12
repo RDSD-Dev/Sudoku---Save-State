@@ -57,9 +57,7 @@ export default function Sudoku({ navigation, route}) {
 
                 tempSudoku.boxes.push(tempBox);
             }
-            for(let i=0; i<tempSudoku.boxes.length; i++){
-                console.log(i,  tempSudoku.boxes[i].row, tempSudoku.boxes[i].colum);
-            }
+
             saveSudoku(tempSudoku);
         }
         else{ // Remake board
@@ -78,10 +76,16 @@ export default function Sudoku({ navigation, route}) {
         const box = sudoku.boxes.find((e) => e.id == boxId);
         let highlight = [];
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
-        for(let i=0; i<highlight.length; i++){
-            console.log('Box: ', i, highlight[i].row, highlight[i].colum, highlight[i].cellId);
-        }
         setHighlighted(highlight);
+    }
+    function checkNumber(number){
+        const box = sudoku.boxes.find((e) => e.id == focus);
+        let hasNumber = sudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
+        hasNumber = hasNumber.filter((e) => e.current == number);
+        if(isTemp && hasNumber.length !== 0){
+            return;
+        }
+        placeNumber(number);
     }
     function placeNumber(number){
         const box = sudoku.boxes.find((e) => e.id == focus);
@@ -237,15 +241,15 @@ export default function Sudoku({ navigation, route}) {
     function displayNumbers(){
         return(
             <View style={styles.numbers}>
-                {displayButton('1', () => placeNumber(1))}
-                {displayButton('2', () => placeNumber(2))}
-                {displayButton('3', () => placeNumber(3))}
-                {displayButton('4', () => placeNumber(4))}
-                {displayButton('5', () => placeNumber(5))}
-                {displayButton('6', () => placeNumber(6))}
-                {displayButton('7', () => placeNumber(7))}
-                {displayButton('8', () => placeNumber(8))}
-                {displayButton('9', () => placeNumber(9))}
+                {displayButton('1', () => checkNumber(1))}
+                {displayButton('2', () => checkNumber(2))}
+                {displayButton('3', () => checkNumber(3))}
+                {displayButton('4', () => checkNumber(4))}
+                {displayButton('5', () => checkNumber(5))}
+                {displayButton('6', () => checkNumber(6))}
+                {displayButton('7', () => checkNumber(7))}
+                {displayButton('8', () => checkNumber(8))}
+                {displayButton('9', () => checkNumber(9))}
             </View>
         );
     }
