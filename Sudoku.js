@@ -31,94 +31,34 @@ export default function Sudoku({ navigation, route}) {
                 mistakes: 0,
             };
             let currentCell = 0;
-            for(let i=0; i< sudokuStr.puzzle.length; i++){
+            let currentColumn = 0;
+            let currentRow = 0;
+            for(let i=0; i< sudokuStr.puzzle.length; i++, currentColumn++){
+                const currentBox = i+1;
+                const currentRowPP = currentRow+1;
                 const currentPuzzle = sudokuStr.puzzle[i];
                 const currentSolution = sudokuStr.solution[i];
-                if(i % 3 == 0 && i !== 0){
-                    if(currentCell == 2 && i < 27){ // First 27 cells go into cells 0 1 2.
-                        currentCell = 0;
-                    }
-                    else if(currentCell == 5 && i < 54){ // 28 - 54 goes into cells 3 4 5.
-                        currentCell = 3;
-                    }
-                    else if(currentCell == 8){ // 55 - 81 goes into cells 6 7 8
-                        currentCell = 6;
-                    }
-                    else{
-                        currentCell++;
-                    }
+
+                if(currentColumn == 9){
+                    currentColumn = 0;
                 }
 
-                let tempBox = {id: tempSudoku.boxes.length, cellId: currentCell, current: currentPuzzle, solution: currentSolution, temp: []};
-                if(tempBox.cellId == 0 || tempBox.cellId == 3|| tempBox.cellId == 6){
-                    if(tempBox.id == 0 || tempBox.id == 3 || tempBox.id == 6){
-                        tempBox.colum = 0;
-                    }
-                    else if(tempBox.id == 1 || tempBox.id == 4 || tempBox.id == 7){
-                        tempBox.colum = 1;
-                    }
-                    else if(tempBox.id == 2 || tempBox.id == 5 || tempBox.id == 8){
-                        tempBox.colum = 2;
-                    }
-                }
-                else if(tempBox.cellId == 1 || tempBox.cellId == 4|| tempBox.cellId == 7){
-                    if(tempBox.id == 0 || tempBox.id == 3 || tempBox.id == 6){
-                        tempBox.colum = 3;
-                    }
-                    else if(tempBox.id == 1 || tempBox.id == 4 || tempBox.id == 7){
-                        tempBox.colum = 4;
-                    }
-                    else if(tempBox.id == 2 || tempBox.id == 5 || tempBox.id == 8){
-                        tempBox.colum = 5;
-                    }
-                }
-                else if(tempBox.cellId == 2 || tempBox.cellId == 5|| tempBox.cellId == 8){
-                    if(tempBox.id == 0 || tempBox.id == 3 || tempBox.id == 6){
-                        tempBox.colum = 6;
-                    }
-                    else if(tempBox.id == 1 || tempBox.id == 4 || tempBox.id == 7){
-                        tempBox.colum = 7;
-                    }
-                    else if(tempBox.id == 2 || tempBox.id == 5 || tempBox.id == 8){
-                        tempBox.colum = 8;
-                    }
-                }
+                let tempBox = {id: tempSudoku.boxes.length, cellId: currentCell, current: currentPuzzle, solution: currentSolution, temp: [], row: currentRow, colum: currentColumn};
 
-                if(tempBox.cellId == 0 || tempBox.cellId == 1 || tempBox.cellId == 2){
-                    if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
-                        tempBox.row = 0;
-                    }
-                    else if(tempBox.id == 3 || tempBox.id == 4 || tempBox.id == 5){
-                        tempBox.row = 1;
-                    }
-                    else if(tempBox.id == 6 || tempBox.id == 7 || tempBox.id == 8){
-                        tempBox.row = 2;
-                    }
-                }
-                else if(tempBox.cellId == 3 || tempBox.cellId == 4 || tempBox.cellId == 5){
-                    if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
-                        tempBox.row = 3;
-                    }
-                    else if(tempBox.id == 3 || tempBox.id == 4 || tempBox.id == 5){
-                        tempBox.row = 4;
-                    }
-                    else if(tempBox.id == 6 || tempBox.id == 7 || tempBox.id == 8){
-                        tempBox.row = 5;
-                    }
-                }
-                else if(tempBox.cellId == 6 || tempBox.cellId == 7 || tempBox.cellId == 8){
-                    if(tempBox.id == 0 || tempBox.id == 1 || tempBox.id == 2){
-                        tempBox.row = 6;
-                    }
-                    else if(tempBox.id == 3 || tempBox.id == 4 || tempBox.id == 5){
-                        tempBox.row = 7;
-                    }
-                    else if(tempBox.id == 6 || tempBox.id == 7 || tempBox.id == 8){
-                        tempBox.row = 8;
+                if(currentBox % 3 == 0){ // If we are entering a new cell
+                    currentCell++;
+                    if(currentBox % 9 == 0){ // If not done with set of cells
+                        if(currentRowPP % 3 !== 0){
+                            currentCell -= 3;
+                        }
+                        currentRow++;
                     }
                 }
 
                 tempSudoku.boxes.push(tempBox);
+            }
+            for(let i=0; i<tempSudoku.boxes.length; i++){
+                console.log(i,  tempSudoku.boxes[i].row, tempSudoku.boxes[i].colum);
             }
             saveSudoku(tempSudoku);
         }
@@ -132,22 +72,14 @@ export default function Sudoku({ navigation, route}) {
     }
 
     function changeFocus(boxId){
+        console.log('Focus: ', sudoku.boxes.find((e) => e.id == boxId));
         setRefresh('');
         setFocus(boxId);
         const box = sudoku.boxes.find((e) => e.id == boxId);
-        const cell = sudoku.boxes.filter((e) => (e.cellId == box.cellId));
-        const row = sudoku.boxes.filter((e) => (e.row == box.row));
-        const colum = sudoku.boxes.filter((e) => (e.colum == box.colum));
-        console.log('Box: ', box, " Cell: ", cell, " Row: ", row, " Colum: ", colum);
         let highlight = [];
-        for(let i=0; i<cell.length; i++){
-            highlight.push(cell[i]);
-        }
-        for(let i=0; i<row.length; i++){
-            highlight.push(row[i]);
-        }
-        for(let i=0; i<colum.length; i++){
-            highlight.push(colum[i]);
+        highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
+        for(let i=0; i<highlight.length; i++){
+            console.log('Box: ', i, highlight[i].row, highlight[i].colum, highlight[i].cellId);
         }
         setHighlighted(highlight);
     }
