@@ -78,20 +78,27 @@ export default function Sudoku({ navigation, route}) {
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
         setHighlighted(highlight);
     }
-    function checkNumber(number){
-        const box = sudoku.boxes.find((e) => e.id == focus);
+    function checkNumber(number, boxId){
+        if(boxId == undefined){
+            boxId = focus;
+        }
+        console.log(boxId, number);
+        const box = sudoku.boxes.find((e) => e.id == boxId);
         let hasNumber = sudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
-        hasNumber = hasNumber.filter((e) => e.current == number);
+        hasNumber = hasNumber.filter((e) => e.current == number && e.solution == number);
         if(isTemp && hasNumber.length !== 0){
             return;
         }
         placeNumber(number);
     }
-    function placeNumber(number){
-        const box = sudoku.boxes.find((e) => e.id == focus);
+    function placeNumber(number, boxId){
+        if(boxId == undefined){
+            boxId = focus;
+        }
+        const box = sudoku.boxes.find((e) => e.id == boxId);
         if(box!== null && box.current != box.solution){
             let tempSudoku = sudoku;
-            const boxIndex = tempSudoku.boxes.findIndex((e) => e.id == focus);
+            const boxIndex = tempSudoku.boxes.findIndex((e) => e.id == boxId);
 
             if(isTemp){
                 const tempIndex = tempSudoku.boxes[boxIndex].temp.findIndex((e) => e == number);
@@ -112,6 +119,43 @@ export default function Sudoku({ navigation, route}) {
             }
             setRefresh(refresh + ' ');
         }
+    }
+    function saveState(){
+        let tempSudoku = sudoku;
+        tempSudoku.state = [];
+        for(let i=0; i<tempSudoku.boxes.length; i++){
+            const box = tempSudoku.boxes.find((e) => e.id == i);
+            if(box.current !== box.solution && box.temp.length !== 0){
+                tempSudoku.state.push(Object.assign({}, box));
+            }
+        }
+        saveSudoku(tempSudoku);
+        console.log('Saved state', tempSudoku.state);
+    }
+    function loadState(){
+        const currentTemp = isTemp;
+        setIsTemp(true);
+        let tempSudoku = sudoku;
+        for(let i=0; i<tempSudoku.state.length; i++){
+            const stateBox = tempSudoku.state[i];
+            const box = tempSudoku.boxes.find((e) => e.id == stateBox.id);
+            console.log(stateBox.temp, box.temp);
+            if(box.current !== box.solution && stateBox.temp !== box.temp){
+                const index = tempSudoku.boxes.findIndex((e) => e.id == box.id);
+                tempSudoku.boxes[index].temp = [];
+                console.log(stateBox.temp);
+                for(let y=0; y<stateBox.temp.length; y++){
+                    let hasNumber = tempSudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
+                    hasNumber = hasNumber.filter((e) => e.current == number && e.solution == stateBox.temp[y]);
+                    if(hasNumber.length == 0){
+                        tempSudoku.boxes[index].temp.push(stateBox.temp[y]);
+                    }
+                }
+            }
+        }
+        saveSudoku(tempSudoku);
+        setRefresh(refresh + ' ');
+        console.log('Loaded State');
     }
 
     function displayBoard(){
@@ -332,6 +376,12 @@ export default function Sudoku({ navigation, route}) {
                 <View style={[styles.row]}>
                     <Text>Lock</Text>
                     <Checkbox style={styles.checkbox} value={isLock} onValueChange={setIsLock} />
+                </View>
+                <View style={[styles.row]}>
+                   {displayButton('Save', ()=>saveState())}
+                </View>
+                <View style={[styles.row]}>
+                   {displayButton('Load', ()=>loadState())}
                 </View>
             </View>
             {displayNumbers()}
