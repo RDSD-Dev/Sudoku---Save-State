@@ -117,14 +117,10 @@ export default function Sudoku({ navigation, route}) {
                 if(box.solution == number){
                     let hasNumber = sudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
                     hasNumber = hasNumber.filter((e) => e.solution !== e.current && e.temp.indexOf(number) !== -1);
-                    console.log('Temp? ', hasNumber);
                     for(let i=0; i<hasNumber.length; i++){
                         const index = tempSudoku.boxes.indexOf(hasNumber[i]);
                         const tempIndex = tempSudoku.boxes[index].temp.indexOf(number);
-                        console.log('Splice: ', tempSudoku.boxes[index], 'Index: ', tempIndex);
                         tempSudoku.boxes[index].temp.splice(tempIndex, 1);
-                        console.log('Splice: ', tempSudoku.boxes[index], 'Index: ', tempIndex);
-
                     }
                 }
                 else if(tempSudoku.boxes[boxIndex].current !== tempSudoku.boxes[boxIndex].solution){
