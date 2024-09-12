@@ -126,27 +126,24 @@ export default function Sudoku({ navigation, route}) {
         for(let i=0; i<tempSudoku.boxes.length; i++){
             const box = tempSudoku.boxes.find((e) => e.id == i);
             if(box.current !== box.solution && box.temp.length !== 0){
-                tempSudoku.state.push(Object.assign({}, box));
+                const stateBox = JSON.stringify(box);
+                tempSudoku.state.push(JSON.parse(stateBox));
             }
         }
         saveSudoku(tempSudoku);
         console.log('Saved state', tempSudoku.state);
     }
     function loadState(){
-        const currentTemp = isTemp;
-        setIsTemp(true);
         let tempSudoku = sudoku;
         for(let i=0; i<tempSudoku.state.length; i++){
             const stateBox = tempSudoku.state[i];
             const box = tempSudoku.boxes.find((e) => e.id == stateBox.id);
-            console.log(stateBox.temp, box.temp);
             if(box.current !== box.solution && stateBox.temp !== box.temp){
                 const index = tempSudoku.boxes.findIndex((e) => e.id == box.id);
                 tempSudoku.boxes[index].temp = [];
-                console.log(stateBox.temp);
                 for(let y=0; y<stateBox.temp.length; y++){
                     let hasNumber = tempSudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
-                    hasNumber = hasNumber.filter((e) => e.current == number && e.solution == stateBox.temp[y]);
+                    hasNumber = hasNumber.filter((e) => e.current == stateBox.temp[y] && e.solution == stateBox.temp[y]);
                     if(hasNumber.length == 0){
                         tempSudoku.boxes[index].temp.push(stateBox.temp[y]);
                     }
