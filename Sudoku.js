@@ -11,6 +11,7 @@ export default function Sudoku({ navigation, route}) {
     const [highlighted, setHighlighted] = useState(null);
     const [isTemp, setIsTemp] = useState(false);
     const [isLock, setIsLock] = useState(false);
+    const [lockNum, setLockNum] = useState(0);
     const [refresh, setRefresh] = useState('');
 
     useEffect(() => {
@@ -69,6 +70,14 @@ export default function Sudoku({ navigation, route}) {
         AsyncStorage.setItem('sudoku', JSON.stringify(tempSudoku));
     }
 
+    function pressNumber(number){
+        if(!isLock){
+            checkNumber(number);
+        }
+        else{
+            setLockNum(number);
+        }
+    }
     function changeFocus(boxId){
         console.log('Focus: ', sudoku.boxes.find((e) => e.id == boxId));
         setRefresh('');
@@ -77,6 +86,9 @@ export default function Sudoku({ navigation, route}) {
         let highlight = [];
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
         setHighlighted(highlight);
+        if(isLock){
+            checkNumber(lockNum, boxId);
+        }
     }
     function checkNumber(number, boxId){
         if(boxId == undefined){
@@ -89,9 +101,16 @@ export default function Sudoku({ navigation, route}) {
         if(isTemp && hasNumber.length !== 0){
             return;
         }
+        if(box.current !== box.solution && box.current == number){
+            let tempSudoku = sudoku;
+            const index = tempSudoku.boxes.findIndex((e) => e.id == box.id);
+            tempSudoku.boxes[index].current = '-';
+            saveSudoku(tempSudoku);
+            setRefresh(refresh + ' ');
+            return;
+        }
 
-
-        placeNumber(number);
+        placeNumber(number, boxId);
     }
     function placeNumber(number, boxId){
         if(boxId == undefined){
@@ -294,15 +313,15 @@ export default function Sudoku({ navigation, route}) {
     function displayNumbers(){
         return(
             <View style={styles.numbers}>
-                {displayButton('1', () => checkNumber(1))}
-                {displayButton('2', () => checkNumber(2))}
-                {displayButton('3', () => checkNumber(3))}
-                {displayButton('4', () => checkNumber(4))}
-                {displayButton('5', () => checkNumber(5))}
-                {displayButton('6', () => checkNumber(6))}
-                {displayButton('7', () => checkNumber(7))}
-                {displayButton('8', () => checkNumber(8))}
-                {displayButton('9', () => checkNumber(9))}
+                {displayButton('1', () => pressNumber(1))}
+                {displayButton('2', () => pressNumber(2))}
+                {displayButton('3', () => pressNumber(3))}
+                {displayButton('4', () => pressNumber(4))}
+                {displayButton('5', () => pressNumber(5))}
+                {displayButton('6', () => pressNumber(6))}
+                {displayButton('7', () => pressNumber(7))}
+                {displayButton('8', () => pressNumber(8))}
+                {displayButton('9', () => pressNumber(9))}
             </View>
         );
     }
