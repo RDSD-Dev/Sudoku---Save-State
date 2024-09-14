@@ -15,11 +15,12 @@ export default function Sudoku({ navigation, route}) {
     const [refresh, setRefresh] = useState('');
 
     useEffect(() => {
+        console.log(lockNum);
         if(sudoku == null){
             navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
             buildBoard();
         }
-    }, [focus, refresh]);
+    }, [focus, refresh, lockNum]);
 
     function buildBoard(){
         if(route.params.sudoku == undefined){ // Make new board
@@ -87,8 +88,14 @@ export default function Sudoku({ navigation, route}) {
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
         setHighlighted(highlight);
         if(isLock){
-            checkNumber(lockNum, boxId);
+            if(box.current !== '-'){
+                pressNumber(box.current);
+            }
+            else{
+                checkNumber(lockNum, boxId);
+            }
         }
+        setRefresh(refresh + ' ');
     }
     function checkNumber(number, boxId){
         if(boxId == undefined){
@@ -247,14 +254,14 @@ export default function Sudoku({ navigation, route}) {
         );
     }
     function displayBox(box){
-        let style;
+        let style = [styles.boxShell];
         if(highlighted !== null && highlighted.findIndex((e) => e.id == box.id) !== -1){
-            style = styles.highlightBox;
+            style.push(styles.highlightBox);
         }
         if(box.current == box.solution){ // Display Solution
             return(
                 <View style={style}>
-                    {focus !== null && focus == box.id && <Text style={styles.highlightBox}>{box.current}</Text>}
+                    {focus !== null && focus == box.id && <Text style={[styles.highlightBox, styles.focus]}>{box.current}</Text>}
                     {(focus== null || focus !== box.id) && <Text style={styles.box}>{box.current}</Text>}
                 </View>
             );
@@ -262,7 +269,7 @@ export default function Sudoku({ navigation, route}) {
         if(box.current !== '-'){
             return(
                 <View style={style}>
-                    {focus !== null && focus == box.id && <Text style={styles.highlightBox}>{box.current}</Text>}
+                    {focus !== null && focus == box.id && <Text style={[styles.highlightBox, styles.focus]}>{box.current}</Text>}
                     {(focus == null || focus !== box.id) && <Text style={styles.box}>{box.current}</Text>}
                 </View>
             );
@@ -270,7 +277,7 @@ export default function Sudoku({ navigation, route}) {
         else{ // Display Temp
             return(
                 <View style={style}>
-                    {focus !== null && focus == box.id && <Text style={styles.highlightBox}>{displayTemp(box)}</Text>}
+                    {focus !== null && focus == box.id && <Text style={[styles.highlightBox, styles.focus]}>{displayTemp(box)}</Text>}
                     {(focus== null || focus !== box.id) && <Text style={styles.box}>{displayTemp(box)}</Text>}
                 </View>
             );
@@ -304,10 +311,15 @@ export default function Sudoku({ navigation, route}) {
     }
 
     function displayButton(title, onPress){
+        let style = styles.number;
+        if(title == JSON.stringify(lockNum) && isLock){
+            style = styles.highlightNumber;
+        }
         return(
-            <Pressable onPress={onPress}>
-                <Text style={styles.number}>{title}</Text>
-            </Pressable>
+            <View>
+                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox]}><Text style={styles.highlightNumber}>{title}</Text></Pressable>}
+                {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox]}><Text style={styles.number}>{title}</Text></Pressable>}
+            </View>
         );
     }
     function displayNumbers(){
@@ -327,11 +339,12 @@ export default function Sudoku({ navigation, route}) {
     }
 
     const windowWidth = Dimensions.get('window').width;
-    const boxWidth = (windowWidth)/10;
+    const boxWidth = (windowWidth)/9.4;
     const styles = StyleSheet.create({
         board: {
             borderColor: 'blue',
-            borderWidth: 2,
+            borderWidth: 0,
+            padding: 0,
             borderStyle: 'solid',
             alignSelf: 'center',
             justifyContent: 'center',
@@ -342,26 +355,37 @@ export default function Sudoku({ navigation, route}) {
         cell: {
             borderColor: 'black',
             borderStyle: 'solid',
+            padding: 1,
+            margin: 0,
             borderWidth: 1,
             alignItems: 'center',
             justifyContent: 'center',
             alignSelf: 'center',
         },
+        boxShell: {
+            alignItems: 'center',
+            alignContent: 'center',
+            justifyContent: 'center',
+        },
         box: {
+            width: boxWidth,
+            height: boxWidth,
+            alignContent: 'center',
             borderColor: 'grey',
             borderWidth: 1,
             borderStyle: 'solid',
             justifyContent: 'center',
-            padding: 1,
+            padding: 0,
+            margin: 0,
             alignItems: 'center',
             alignSelf: 'center',
-            width: boxWidth,
-            height: boxWidth
         },
         row: {
             flexDirection: 'row',
         },
         highlightBox: {
+            width: boxWidth,
+            height: boxWidth,
             borderColor: 'black',
             borderWidth: 2,
             borderStyle: 'solid',
@@ -369,12 +393,14 @@ export default function Sudoku({ navigation, route}) {
             alignItems: 'center',
             alignSelf: 'center',
             backgroundColor: 'light-blue',
-            width: boxWidth,
-            height: boxWidth
         },
         tempNums: {
             fontSize: 10,
         },
+        focus: {
+            borderWidth: 2,
+            borderColor: 'blue',
+        }, 
 
         numbers: {
             flexDirection: 'row',
@@ -382,13 +408,20 @@ export default function Sudoku({ navigation, route}) {
             width: '100%',
 
         },
-        number: {
-            fontSize: 32,
+        numberBox: {
             borderWidth: 1,
             borderColor: 'black',
             paddingHorizontal: 4,
             marginHorizontal: 4,
             marginVertical: 4,
+        },
+        number: {
+            fontSize: 32,
+
+        },
+        highlightNumber: {
+            fontSize: 32,
+            color: 'blue',
         },
 
     });
