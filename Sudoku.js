@@ -260,25 +260,25 @@ export default function Sudoku({ navigation, route}) {
         }
         if(box.current == box.solution){ // Display Solution
             return(
-                <View style={style}>
-                    {focus !== null && focus == box.id && <Text style={[styles.highlightBox, styles.focus]}>{box.current}</Text>}
-                    {(focus== null || focus !== box.id) && <Text style={styles.box}>{box.current}</Text>}
+                <View>
+                    {(focus== null || focus !== box.id) && <View style={style}><Text style={styles.box}>{box.current}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box]}>{box.current}</Text></View>}
                 </View>
             );
         }
-        if(box.current !== '-'){
+        else if(box.current !== '-'){
             return(
-                <View style={style}>
-                    {focus !== null && focus == box.id && <Text style={[styles.highlightBox, styles.focus]}>{box.current}</Text>}
-                    {(focus == null || focus !== box.id) && <Text style={styles.box}>{box.current}</Text>}
+                <View>
+                    {(focus== null || focus !== box.id) && <View style={[style, styles.boxWrong]}><Text style={[styles.box, styles.boxWrong]}>{box.current}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box, styles.boxWrong]}>{box.current}</Text></View>}
                 </View>
             );
         }
-        else{ // Display Temp
+        else{ // Display Temp boxWrong
             return(
-                <View style={style}>
-                    {focus !== null && focus == box.id && <Text style={[styles.highlightBox, styles.focus]}>{displayTemp(box)}</Text>}
-                    {(focus== null || focus !== box.id) && <Text style={styles.box}>{displayTemp(box)}</Text>}
+                <View>
+                    {(focus== null || focus !== box.id) && <View style={style}><Text style={styles.box}>{displayTemp(box)}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box]}>{displayTemp(box)}</Text></View>}
                 </View>
             );
         }
@@ -291,20 +291,20 @@ export default function Sudoku({ navigation, route}) {
         }
         return(
             <View style={styles.tempNums}>
-                <View style={styles.row}>
-                    <Text style={styles.tempNums}>{display[0]}</Text>
-                    <Text style={styles.tempNums}>{display[1]}</Text>
-                    <Text style={styles.tempNums}>{display[2]}</Text>
+                <View style={styles.tempRow}>
+                    <Text style={styles.tempNum}>{display[0]}</Text>
+                    <Text style={styles.tempNum}>{display[1]}</Text>
+                    <Text style={styles.tempNum}>{display[2]}</Text>
                 </View>
-                <View style={styles.row}>
-                    <Text style={styles.tempNums}>{display[3]}</Text>
-                    <Text style={styles.tempNums}>{display[4]}</Text>
-                    <Text style={styles.tempNums}>{display[5]}</Text>
+                <View style={styles.tempRow}>
+                    <Text style={styles.tempNum}>{display[3]}</Text>
+                    <Text style={styles.tempNum}>{display[4]}</Text>
+                    <Text style={styles.tempNum}>{display[5]}</Text>
                 </View>
-                <View style={styles.row}>
-                    <Text style={styles.tempNums}>{display[6]}</Text>
-                    <Text style={styles.tempNums}>{display[7]}</Text>
-                    <Text style={styles.tempNums}>{display[8]}</Text>
+                <View style={styles.tempRow}>
+                    <Text style={styles.tempNum}>{display[6]}</Text>
+                    <Text style={styles.tempNum}>{display[7]}</Text>
+                    <Text style={styles.tempNum}>{display[8]}</Text>
                 </View>
             </View>
         );
@@ -363,50 +363,38 @@ export default function Sudoku({ navigation, route}) {
             alignSelf: 'center',
         },
         boxShell: {
-            alignItems: 'center',
-            alignContent: 'center',
-            justifyContent: 'center',
-        },
-        box: {
             width: boxWidth,
             height: boxWidth,
-            alignContent: 'center',
             borderColor: 'grey',
             borderWidth: 1,
             borderStyle: 'solid',
             justifyContent: 'center',
-            padding: 0,
-            margin: 0,
-            alignItems: 'center',
+        },
+        box: {
+            fontSize: 20,
+            justifyContent: 'center',
             alignSelf: 'center',
+            alignContent: 'center',
         },
         row: {
             flexDirection: 'row',
         },
         highlightBox: {
-            width: boxWidth,
-            height: boxWidth,
-            borderColor: 'black',
             borderWidth: 2,
-            borderStyle: 'solid',
-            padding: 1,
-            alignItems: 'center',
-            alignSelf: 'center',
-            backgroundColor: 'light-blue',
-        },
-        tempNums: {
-            fontSize: 10,
         },
         focus: {
             borderWidth: 2,
             borderColor: 'blue',
-        }, 
+        },
+        boxWrong: {
+            borderColor: 'red',
+            color: 'red',
+        },
 
         numbers: {
             flexDirection: 'row',
             justifyContent: 'center',
             width: '100%',
-
         },
         numberBox: {
             borderWidth: 1,
@@ -417,11 +405,26 @@ export default function Sudoku({ navigation, route}) {
         },
         number: {
             fontSize: 32,
-
         },
         highlightNumber: {
             fontSize: 32,
             color: 'blue',
+            backgroundColor: 'blue',
+        },
+
+        tempRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            alignContent: 'space-evenly',
+        },
+        tempNums: {
+            width: boxWidth,
+            justifyContent: 'space-evenly',
+        },
+        tempNum: {
+            fontSize: 10,
+            justifyContent: 'space-evenly',
+            alignSelf: 'space-evenly',
         },
 
     });
