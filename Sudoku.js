@@ -80,7 +80,7 @@ export default function Sudoku({ navigation, route}) {
         }
     }
     function changeFocus(boxId){
-        console.log('Focus: ', sudoku.boxes.find((e) => e.id == boxId));
+        //console.log('Focus: ', sudoku.boxes.find((e) => e.id == boxId));
         setRefresh('');
         setFocus(boxId);
         const box = sudoku.boxes.find((e) => e.id == boxId);
@@ -101,7 +101,7 @@ export default function Sudoku({ navigation, route}) {
         if(boxId == undefined){
             boxId = focus;
         }
-        console.log(boxId, number);
+        //console.log(boxId, number);
         const box = sudoku.boxes.find((e) => e.id == boxId);
         let hasNumber = sudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
         hasNumber = hasNumber.filter((e) => e.current == number && e.solution == number);
