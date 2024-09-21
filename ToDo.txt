@@ -1,0 +1,5 @@
+Highlight same numbers when one of them is pressed
+Add number of numbers left to be added
+Add Win screen
+Make default theme look good
+Make make screen look good

@@ -9,13 +9,13 @@ export default function Sudoku({ navigation, route}) {
     const [sudoku, setSudoku] = useState(null);
     const [focus, setFocus] = useState(null);
     const [highlighted, setHighlighted] = useState(null);
+    const [highlightNums, setHighlightNums] = useState(null);
     const [isTemp, setIsTemp] = useState(false);
     const [isLock, setIsLock] = useState(false);
     const [lockNum, setLockNum] = useState(0);
     const [refresh, setRefresh] = useState('');
 
     useEffect(() => {
-        console.log(lockNum);
         if(sudoku == null){
             navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
             buildBoard();
@@ -72,11 +72,17 @@ export default function Sudoku({ navigation, route}) {
     }
 
     function pressNumber(number){
+        if(!isLock && focus == null){
+            return;
+        }
         if(!isLock){
             checkNumber(number);
         }
         else{
+            setFocus(null);
+            setHighlighted(null);
             setLockNum(number);
+            setRefresh(refresh + ' ');
         }
     }
     function changeFocus(boxId){
@@ -88,10 +94,13 @@ export default function Sudoku({ navigation, route}) {
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
         setHighlighted(highlight);
         if(isLock){
-            if(box.current !== '-'){
+            if(box.current !== '-' && box.current == box.solution){
                 pressNumber(box.current);
+                setFocus(boxId);
+                setHighlighted(highlight);
+
             }
-            else{
+            else if(lockNum !== 0){
                 checkNumber(lockNum, boxId);
             }
         }
@@ -129,6 +138,7 @@ export default function Sudoku({ navigation, route}) {
             const boxIndex = tempSudoku.boxes.findIndex((e) => e.id == boxId);
 
             if(isTemp){
+                number = JSON.parse(number);
                 const tempIndex = tempSudoku.boxes[boxIndex].temp.findIndex((e) => e == number);
                 if(tempIndex == -1){
                     tempSudoku.boxes[boxIndex].temp.push(number);
@@ -409,7 +419,6 @@ export default function Sudoku({ navigation, route}) {
         highlightNumber: {
             fontSize: 32,
             color: 'blue',
-            backgroundColor: 'blue',
         },
 
         tempRow: {
