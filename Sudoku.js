@@ -20,6 +20,16 @@ export default function Sudoku({ navigation, route}) {
             navigation.setOptions({title: "Sudoku "+ route.params.difficulty.label});
             buildBoard();
         }
+        if(isLock && lockNum == 0 && focus !== null){
+            const box = sudoku.boxes.find((e) => e.id == focus);
+            console.log('Box: ', box);
+            if(box.current !== '-'){
+                setLockNum(box.current);
+            }
+        }
+        else if(!isLock && lockNum !== 0){
+            setLockNum(0);
+        }
     }, [focus, refresh, lockNum]);
 
     function buildBoard(){
@@ -507,7 +517,7 @@ export default function Sudoku({ navigation, route}) {
                 </View>
                 <View style={[styles.row]}>
                     <Text>Lock</Text>
-                    <Checkbox style={styles.checkbox} value={isLock} onValueChange={setIsLock} />
+                    <Checkbox style={styles.checkbox} value={isLock} onValueChange={(itemValue) => {setRefresh(refresh + ' '); setIsLock(itemValue)}} />
                 </View>
                 <View style={[styles.row]}>
                    {displayButton('Save', ()=>saveState())}

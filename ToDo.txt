@@ -1,4 +1,3 @@
-Highlight same numbers when one of them is pressed
 Add Win screen
 Make default theme look good
 Make make screen look good
