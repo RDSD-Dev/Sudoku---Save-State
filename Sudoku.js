@@ -351,15 +351,11 @@ export default function Sudoku({ navigation, route}) {
         );
     }
 
-    function displayButton(title, onPress){
-        let style = styles.number;
-        if(title == JSON.stringify(lockNum) && isLock){
-            style = styles.highlightNumber;
-        }
+    function displayButton(title, onPress, style){
         return(
             <View>
-                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox]}><Text style={styles.highlightNumber}>{title}</Text></Pressable>}
-                {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox]}><Text style={styles.number}>{title}</Text></Pressable>}
+                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[styles.highlightNumber, style]}>{title}</Text></Pressable>}
+                {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox, style]}><Text style={[styles.number, style]}>{title}</Text></Pressable>}
             </View>
         );
     }
@@ -367,40 +363,40 @@ export default function Sudoku({ navigation, route}) {
         return(
             <View style={styles.numbers}>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('1', () => pressNumber(1))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[0].quantity}</Text>
+                    {displayButton('1', () => pressNumber(1), sudoku.numbers[0].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[0].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[0].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('2', () => pressNumber(2))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[1].quantity}</Text>
+                    {displayButton('2', () => pressNumber(2), sudoku.numbers[1].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[1].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[1].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('3', () => pressNumber(3))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[2].quantity}</Text>
+                    {displayButton('3', () => pressNumber(3), sudoku.numbers[2].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[2].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[2].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('4', () => pressNumber(4))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[3].quantity}</Text>
+                    {displayButton('4', () => pressNumber(4), sudoku.numbers[3].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[3].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[3].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('5', () => pressNumber(5))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[4].quantity}</Text>
+                    {displayButton('5', () => pressNumber(5), sudoku.numbers[4].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[4].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[4].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('6', () => pressNumber(6))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[5].quantity}</Text>
+                    {displayButton('6', () => pressNumber(6), sudoku.numbers[5].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[5].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[5].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('7', () => pressNumber(7))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[6].quantity}</Text>
+                    {displayButton('7', () => pressNumber(7), sudoku.numbers[6].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[6].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[6].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('8', () => pressNumber(8))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[7].quantity}</Text>
+                    {displayButton('8', () => pressNumber(8), sudoku.numbers[7].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[7].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[7].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('9', () => pressNumber(9))}
-                    <Text style={styles.numberQuantity}>{sudoku.numbers[8].quantity}</Text>
+                    {displayButton('9', () => pressNumber(9), sudoku.numbers[8].quantity>0 ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, sudoku.numbers[8].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[8].quantity}</Text>
                 </View>
             </View>
         );
@@ -485,6 +481,10 @@ export default function Sudoku({ navigation, route}) {
         numberQuantity: {
             justifyContent: 'center',
         },
+        finishedNumber: {
+            borderColor: 'grey',
+            color: 'grey',
+        },
 
         tempRow: {
             flexDirection: 'row',
@@ -513,11 +513,11 @@ export default function Sudoku({ navigation, route}) {
             <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
                 <View style={[styles.row]}>
                     <Text>Pencil</Text>
-                    <Checkbox style={styles.checkbox} value={isTemp} onValueChange={setIsTemp} />
+                    <Checkbox style={styles.checkbox} value={isTemp} onValueChange={(itemValue) => {setIsTemp(itemValue); setRefresh( refresh + ' ')}} />
                 </View>
                 <View style={[styles.row]}>
                     <Text>Lock</Text>
-                    <Checkbox style={styles.checkbox} value={isLock} onValueChange={(itemValue) => {setRefresh(refresh + ' '); setIsLock(itemValue)}} />
+                    <Checkbox style={styles.checkbox} value={isLock} onValueChange={(itemValue) => {setIsLock(itemValue); setRefresh(refresh + ' ')}} />
                 </View>
                 <View style={[styles.row]}>
                    {displayButton('Save', ()=>saveState())}
