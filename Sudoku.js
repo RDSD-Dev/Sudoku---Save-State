@@ -9,7 +9,7 @@ export default function Sudoku({ navigation, route}) {
     const [sudoku, setSudoku] = useState(null);
     const [focus, setFocus] = useState(null);
     const [highlighted, setHighlighted] = useState(null);
-    const [highlightNums, setHighlightNums] = useState(null);
+    const [highlightNum, setHighlightNum] = useState(null);
     const [isTemp, setIsTemp] = useState(false);
     const [isLock, setIsLock] = useState(false);
     const [lockNum, setLockNum] = useState(0);
@@ -97,7 +97,7 @@ export default function Sudoku({ navigation, route}) {
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
         setHighlighted(highlight);
         if(box.current !== '-'){
-            
+            setHighlightNum(box.current);
         }
         if(isLock){
             if(box.current !== '-' && box.current == box.solution){
@@ -157,8 +157,15 @@ export default function Sudoku({ navigation, route}) {
             else{
                 tempSudoku.boxes[boxIndex].current = number;
                 if(box.solution == number){
-                    let hasNumber = sudoku.boxes.filter((e) => e.cellId == box.cellId || e.row == box.row || e.colum == box.colum);
-                    hasNumber = hasNumber.filter((e) => e.solution !== e.current && e.temp.indexOf(number) !== -1);
+                    let tempHasNumber = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
+                    let hasNumber = [];
+                    for(let i=0; i<tempHasNumber.length; i++){
+                        const current = tempHasNumber[i];
+
+                        if(current.temp.indexOf(JSON.parse(number)) !== -1){
+                            hasNumber.push(current);
+                        }
+                    }
                     for(let i=0; i<hasNumber.length; i++){
                         const index = tempSudoku.boxes.indexOf(hasNumber[i]);
                         const tempIndex = tempSudoku.boxes[index].temp.indexOf(number);
@@ -278,8 +285,9 @@ export default function Sudoku({ navigation, route}) {
         if(box.current == box.solution){ // Display Solution
             return(
                 <View>
-                    {(focus== null || focus !== box.id) && <View style={style}><Text style={styles.box}>{box.current}</Text></View>}
+                    {(focus == null || focus !== box.id) && box.current != highlightNum && <View style={style}><Text style={styles.box}>{box.current}</Text></View>}
                     {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box]}>{box.current}</Text></View>}
+                    {(focus == null || focus !== box.id) && box.current == highlightNum && <View style={[style, styles.boxHighlightNum]}><Text style={styles.box}>{box.current}</Text></View>}
                 </View>
             );
         }
@@ -302,12 +310,17 @@ export default function Sudoku({ navigation, route}) {
     }
     function displayTemp(box){
         let display = [' ',' ',' ',' ',' ',' ',' ',' ',' '];
+        let hasTemp = false;
+
         for(let i=0; i< box.temp.length; i++){
             const num = box.temp[i];
+            if(num == highlightNum){
+                hasTemp = true;
+            }
             display[num-1] = JSON.stringify(num);
         }
         return(
-            <View style={styles.tempNums}>
+            <View style={[styles.tempNums, hasTemp ? styles.boxHighlightNum : styles.tempNums]}>
                 <View style={styles.tempRow}>
                     <Text style={styles.tempNum}>{display[0]}</Text>
                     <Text style={styles.tempNum}>{display[1]}</Text>
@@ -316,7 +329,8 @@ export default function Sudoku({ navigation, route}) {
                 <View style={styles.tempRow}>
                     <Text style={styles.tempNum}>{display[3]}</Text>
                     <Text style={styles.tempNum}>{display[4]}</Text>
-                    <Text style={styles.tempNum}>{display[5]}</Text>
+                    {highlightNum != 6 && <Text style={styles.tempNum}>{display[5]}</Text>}
+                    {display[5] !== ' ' && highlightNum == 6 && <Text style={[styles.tempNum, styles.highlightTemp]}>{display[5]}</Text>}
                 </View>
                 <View style={styles.tempRow}>
                     <Text style={styles.tempNum}>{display[6]}</Text>
@@ -434,6 +448,10 @@ export default function Sudoku({ navigation, route}) {
             borderColor: 'red',
             color: 'red',
         },
+        boxHighlightNum: {
+            borderColor: 'blue',
+            borderWidth: 1,
+        },
 
         numbers: {
             flexDirection: 'row',
@@ -471,6 +489,9 @@ export default function Sudoku({ navigation, route}) {
             fontSize: 10,
             justifyContent: 'space-evenly',
             alignSelf: 'space-evenly',
+        },
+        highlightTemp: {
+            color: 'blue',
         },
 
     });
