@@ -354,7 +354,7 @@ export default function Sudoku({ navigation, route}) {
     function displayButton(title, onPress, style){
         return(
             <View>
-                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[styles.highlightNumber, style]}>{title}</Text></Pressable>}
+                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[style, styles.highlightNumber]}>{title}</Text></Pressable>}
                 {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox, style]}><Text style={[styles.number, style]}>{title}</Text></Pressable>}
             </View>
         );

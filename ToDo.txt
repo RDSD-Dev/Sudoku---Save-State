@@ -1,3 +1,4 @@
 Add Win screen
 Make default theme look good
 Make make screen look good
+Add statistics page
