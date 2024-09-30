@@ -31,6 +31,7 @@ export default function Sudoku({ navigation, route}) {
                 difficulty: sudokuStr.difficulty,
                 boxes: [],
                 mistakes: 0,
+                numbers: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id:6}, {id:7}, {id:8}, {id:9}]
             };
             let currentCell = 0;
             let currentColumn = 0;
@@ -59,7 +60,9 @@ export default function Sudoku({ navigation, route}) {
 
                 tempSudoku.boxes.push(tempBox);
             }
-
+            for(let i=1; i<=9; i++){
+                tempSudoku.numbers[i-1].quantity = tempSudoku.boxes.filter((e) => e.current !== e.solution && e.solution == i).length;
+            }
             saveSudoku(tempSudoku);
         }
         else{ // Remake board
@@ -93,6 +96,9 @@ export default function Sudoku({ navigation, route}) {
         let highlight = [];
         highlight = sudoku.boxes.filter((e) => e.row == box.row || e.colum == box.colum || e.cellId == box.cellId);
         setHighlighted(highlight);
+        if(box.current !== '-'){
+            
+        }
         if(isLock){
             if(box.current !== '-' && box.current == box.solution){
                 pressNumber(box.current);
@@ -117,7 +123,7 @@ export default function Sudoku({ navigation, route}) {
         if(isTemp && hasNumber.length !== 0){
             return;
         }
-        if(box.current !== box.solution && box.current == number){
+        if(box.current != box.solution && box.current == number){
             let tempSudoku = sudoku;
             const index = tempSudoku.boxes.findIndex((e) => e.id == box.id);
             tempSudoku.boxes[index].current = '-';
@@ -158,6 +164,7 @@ export default function Sudoku({ navigation, route}) {
                         const tempIndex = tempSudoku.boxes[index].temp.indexOf(number);
                         tempSudoku.boxes[index].temp.splice(tempIndex, 1);
                     }
+                    tempSudoku.numbers[number-1].quantity = tempSudoku.numbers[number-1].quantity -1;
                 }
                 else if(tempSudoku.boxes[boxIndex].current !== tempSudoku.boxes[boxIndex].solution){
                     tempSudoku.mistakes++;
@@ -335,15 +342,42 @@ export default function Sudoku({ navigation, route}) {
     function displayNumbers(){
         return(
             <View style={styles.numbers}>
-                {displayButton('1', () => pressNumber(1))}
-                {displayButton('2', () => pressNumber(2))}
-                {displayButton('3', () => pressNumber(3))}
-                {displayButton('4', () => pressNumber(4))}
-                {displayButton('5', () => pressNumber(5))}
-                {displayButton('6', () => pressNumber(6))}
-                {displayButton('7', () => pressNumber(7))}
-                {displayButton('8', () => pressNumber(8))}
-                {displayButton('9', () => pressNumber(9))}
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('1', () => pressNumber(1))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[0].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('2', () => pressNumber(2))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[1].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('3', () => pressNumber(3))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[2].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('4', () => pressNumber(4))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[3].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('5', () => pressNumber(5))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[4].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('6', () => pressNumber(6))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[5].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('7', () => pressNumber(7))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[6].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('8', () => pressNumber(8))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[7].quantity}</Text>
+                </View>
+                <View style={{alignItems: 'center'}}>
+                    {displayButton('9', () => pressNumber(9))}
+                    <Text style={styles.numberQuantity}>{sudoku.numbers[8].quantity}</Text>
+                </View>
             </View>
         );
     }
@@ -420,6 +454,9 @@ export default function Sudoku({ navigation, route}) {
             fontSize: 32,
             color: 'blue',
         },
+        numberQuantity: {
+            justifyContent: 'center',
+        },
 
         tempRow: {
             flexDirection: 'row',
@@ -439,8 +476,9 @@ export default function Sudoku({ navigation, route}) {
     });
     return (
         <View style={styles.container}>
-            {sudoku !== null && <Text>{sudoku.mistakes}</Text>}
+            {sudoku !== null && <Text>Mistakes: {sudoku.mistakes}</Text>}
             {sudoku !== null && displayBoard()}
+
             <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
                 <View style={[styles.row]}>
                     <Text>Pencil</Text>
@@ -457,7 +495,8 @@ export default function Sudoku({ navigation, route}) {
                    {displayButton('Load', ()=>loadState())}
                 </View>
             </View>
-            {displayNumbers()}
+
+            {sudoku !== null && displayNumbers()}
             <StatusBar style="auto" />
         </View>
     );
