@@ -5,8 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dropdown } from 'react-native-element-dropdown';
 
-export default function Success() {
-    const navigation = useNavigation();
+export default function Success({ navigation, route}) {
     const [settings, setSettings] = useState(null);
     const [sudoku, setSudoku] = useState(null);
     const difficulties = [
@@ -26,7 +25,7 @@ export default function Success() {
             }
           });
 
-        navigation.setOptions({});
+        navigation.setOptions({title: "Completed Sudoku: "+ route.params.difficulty});
         if(settings == null){
             const value = AsyncStorage.getItem('settings').then((value) => {
                 if(value == null){ // Make new settings 
@@ -47,6 +46,7 @@ export default function Success() {
     }, [settings, difficulty]);
 
     function saveSettings(tempSettings){
+        navigation.setOptions({title: "Completed "+ route.params.difficulty.label + ' Sudoku'});
         AsyncStorage.setItem('settings', JSON.stringify(tempSettings));
         setSettings(tempSettings);
     }
@@ -97,7 +97,6 @@ export default function Success() {
         <View style={styles.container}>
             
             <Dropdown style={styles.input} selectedTextStyle={styles.dropdownSelected} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
-            {sudoku !== null && sudoku !== '' && <Button title='Continue' onPress={() => navigateSudoku(true)}/>}
             <Button title='Sudoku' onPress={() => navigateSudoku(false)}/>
 
             <StatusBar style="auto" />

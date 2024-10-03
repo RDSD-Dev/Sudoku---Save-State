@@ -30,6 +30,14 @@ export default function Sudoku({ navigation, route}) {
         else if(!isLock && lockNum !== 0){
             setLockNum(0);
         }
+        if(sudoku !== null && sudoku.numbers[0].quantity == 0 && sudoku.numbers[1].quantity == 0 && sudoku.numbers[2].quantity == 0 && sudoku.numbers[3].quantity == 0 && sudoku.numbers[4].quantity == 0 && sudoku.numbers[5].quantity == 0 && sudoku.numbers[6].quantity == 0 && sudoku.numbers[7].quantity == 0  && sudoku.numbers[8].quantity == 0){
+            // Game completed
+            navigation.navigate('Success', {difficulty: route.params.difficulty.label});
+            setSudoku(null);
+            setFocus(null);
+            setIsLock(false);
+            setLockNum(0);
+        }
     }, [focus, refresh, lockNum]);
 
     function buildBoard(){
