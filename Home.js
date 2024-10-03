@@ -26,7 +26,7 @@ export default function Home() {
             }
           });
 
-        navigation.setOptions({});
+        navigation.setOptions();
         if(settings == null){
             const value = AsyncStorage.getItem('settings').then((value) => {
                 if(value == null){ // Make new settings 
@@ -70,7 +70,7 @@ export default function Home() {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: '#fff',
+            backgroundColor: '#221B1C',
             alignItems: 'center',
             justifyContent: 'center',
         },

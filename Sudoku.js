@@ -6,6 +6,7 @@ import Checkbox from 'expo-checkbox';
 import { getSudoku } from 'sudoku-gen';
 
 export default function Sudoku({ navigation, route}) {
+    const [isActive, setIsActive] = useState(false);
     const [sudoku, setSudoku] = useState(null);
     const [focus, setFocus] = useState(null);
     const [highlighted, setHighlighted] = useState(null);
@@ -303,25 +304,25 @@ export default function Sudoku({ navigation, route}) {
         if(box.current == box.solution){ // Display Solution
             return(
                 <View>
-                    {(focus == null || focus !== box.id) && box.current != highlightNum && <View style={style}><Text style={styles.box}>{box.current}</Text></View>}
-                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box]}>{box.current}</Text></View>}
-                    {(focus == null || focus !== box.id) && box.current == highlightNum && <View style={[style, styles.boxHighlightNum]}><Text style={styles.box}>{box.current}</Text></View>}
+                    {(focus == null || focus !== box.id) && box.current != highlightNum && <View style={style}><Text style={[styles.box, styles.textColor]}>{box.current}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box, styles.textColor]}>{box.current}</Text></View>}
+                    {(focus == null || focus !== box.id) && box.current == highlightNum && <View style={[style, styles.boxHighlightNum]}><Text style={[styles.box, styles.textColor]}>{box.current}</Text></View>}
                 </View>
             );
         }
         else if(box.current !== '-'){
             return(
                 <View>
-                    {(focus== null || focus !== box.id) && <View style={[style, styles.boxWrong]}><Text style={[styles.box, styles.boxWrong]}>{box.current}</Text></View>}
-                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box, styles.boxWrong]}>{box.current}</Text></View>}
+                    {(focus== null || focus !== box.id) && <View style={[style, styles.boxWrong]}><Text style={[styles.box, styles.boxWrong, styles.textColor]}>{box.current}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box, styles.boxWrong, styles.textColor]}>{box.current}</Text></View>}
                 </View>
             );
         }
         else{ // Display Temp boxWrong
             return(
                 <View>
-                    {(focus== null || focus !== box.id) && <View style={style}><Text style={styles.box}>{displayTemp(box)}</Text></View>}
-                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box]}>{displayTemp(box)}</Text></View>}
+                    {(focus== null || focus !== box.id) && <View style={style}><Text style={[styles.box, styles.textColor]}>{displayTemp(box)}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box, styles.textColor]}>{displayTemp(box)}</Text></View>}
                 </View>
             );
         }
@@ -340,20 +341,20 @@ export default function Sudoku({ navigation, route}) {
         return(
             <View style={[styles.tempNums, hasTemp ? styles.boxHighlightNum : styles.tempNums]}>
                 <View style={styles.tempRow}>
-                    <Text style={styles.tempNum}>{display[0]}</Text>
-                    <Text style={styles.tempNum}>{display[1]}</Text>
-                    <Text style={styles.tempNum}>{display[2]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[0]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[1]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[2]}</Text>
                 </View>
                 <View style={styles.tempRow}>
-                    <Text style={styles.tempNum}>{display[3]}</Text>
-                    <Text style={styles.tempNum}>{display[4]}</Text>
-                    {highlightNum != 6 && <Text style={styles.tempNum}>{display[5]}</Text>}
-                    {display[5] !== ' ' && highlightNum == 6 && <Text style={[styles.tempNum, styles.highlightTemp]}>{display[5]}</Text>}
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[3]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[4]}</Text>
+                    {highlightNum != 6 && <Text style={[styles.tempNum, styles.textColor]}>{display[5]}</Text>}
+                    {display[5] !== ' ' && highlightNum == 6 && <Text style={[styles.tempNum, styles.highlightTemp, styles.textColor]}>{display[5]}</Text>}
                 </View>
                 <View style={styles.tempRow}>
-                    <Text style={styles.tempNum}>{display[6]}</Text>
-                    <Text style={styles.tempNum}>{display[7]}</Text>
-                    <Text style={styles.tempNum}>{display[8]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[6]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[7]}</Text>
+                    <Text style={[styles.tempNum, styles.textColor]}>{display[8]}</Text>
                 </View>
             </View>
         );
@@ -362,8 +363,8 @@ export default function Sudoku({ navigation, route}) {
     function displayButton(title, onPress, style){
         return(
             <View>
-                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[style, styles.highlightNumber]}>{title}</Text></Pressable>}
-                {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox, style]}><Text style={[styles.number, style]}>{title}</Text></Pressable>}
+                {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[style, styles.highlightNumber, styles.textColor]}>{title}</Text></Pressable>}
+                {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox, style]}><Text style={[styles.number, style, styles.textColor]}>{title}</Text></Pressable>}
             </View>
         );
     }
@@ -410,9 +411,15 @@ export default function Sudoku({ navigation, route}) {
         );
     }
 
+    // #2B2223 #33292A #584443 #D9A198 #E94F37
     const windowWidth = Dimensions.get('window').width;
     const boxWidth = (windowWidth)/9.4;
     const styles = StyleSheet.create({
+        container: {
+            backgroundColor: '#2B2223',
+            height: '100%',
+        },
+
         board: {
             borderColor: 'blue',
             borderWidth: 0,
@@ -512,6 +519,10 @@ export default function Sudoku({ navigation, route}) {
             color: 'blue',
         },
 
+        textColor: {
+            color: 'white',
+        },
+
     });
     return (
         <View style={styles.container}>
@@ -520,11 +531,11 @@ export default function Sudoku({ navigation, route}) {
 
             <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
                 <View style={[styles.row]}>
-                    <Text>Pencil</Text>
+                    <Text style={[styles.textColor]}>Pencil</Text>
                     <Checkbox style={styles.checkbox} value={isTemp} onValueChange={(itemValue) => {setIsTemp(itemValue); setRefresh( refresh + ' ')}} />
                 </View>
                 <View style={[styles.row]}>
-                    <Text>Lock</Text>
+                    <Text style={[styles.textColor]}>Lock</Text>
                     <Checkbox style={styles.checkbox} value={isLock} onValueChange={(itemValue) => {setIsLock(itemValue); setRefresh(refresh + ' ')}} />
                 </View>
                 <View style={[styles.row]}>
