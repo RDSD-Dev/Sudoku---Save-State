@@ -122,7 +122,7 @@ export default function Sudoku({ navigation, route}) {
         if(box.current !== '-'){
             setHighlightNum(box.current);
         }
-        else if(!isLock && highlightNum == lockNum){
+        else if(!isLock || highlightNum !== lockNum){
             setHighlightNum(0);
         }
         if(isLock){
@@ -580,8 +580,8 @@ export default function Sudoku({ navigation, route}) {
 
             <View style={[styles.row, {justifyContent: 'space-evenly', margin: 8}]}>
                 <FontAwesome6 name="pencil" size={32}  color={isTemp ? theme.focus : theme.text } style={styles.symbol} onPress={() => {setIsTemp(!isTemp); setRefresh( refresh + ' ')}}/>
-                {!isLock && <AntDesign name="unlock" size={32} color={theme.text} style={styles.symbol} onPress={() => {setIsLock(!isLock)}}/>}
-                {isLock && <AntDesign name="lock" size={32} color={theme.focus} style={styles.symbol} onPress={() => {setIsLock(!isLock)}}/>}
+                {!isLock && <AntDesign name="unlock" size={32} color={theme.text} style={styles.symbol} onPress={() => {setIsLock(!isLock); setRefresh(refresh + ' ')}}/>}
+                {isLock && <AntDesign name="lock" size={32} color={theme.focus} style={styles.symbol} onPress={() => {setIsLock(!isLock); setRefresh('')}}/>}
                 <Fontisto name="save-1" size={32} color={theme.text} style={styles.symbol} onPress={() => {saveState()}}/>
                 <Ionicons name="document-text-sharp" size={32} style={styles.symbol} color={theme.text} onPress={() => {loadState()}}/>
             </View>
