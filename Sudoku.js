@@ -122,6 +122,9 @@ export default function Sudoku({ navigation, route}) {
         if(box.current !== '-'){
             setHighlightNum(box.current);
         }
+        else if(!isLock && highlightNum == lockNum){
+            setHighlightNum(0);
+        }
         if(isLock){
             if(box.current !== '-' && box.current == box.solution){
                 pressNumber(box.current);
@@ -480,7 +483,6 @@ export default function Sudoku({ navigation, route}) {
             borderColor: theme.boxBorder,
             backgroundColor: theme.boxBackground,
             borderWidth: 1,
-            padding: 0,
             borderStyle: 'solid',
             justifyContent: 'center',
 
@@ -508,7 +510,6 @@ export default function Sudoku({ navigation, route}) {
         },
         boxHighlightNum: {
             backgroundColor: theme.focus,
-            borderWidth: 1,
         },
 
         numbers: {
@@ -578,7 +579,7 @@ export default function Sudoku({ navigation, route}) {
             {sudoku == null && displayEmptyBoard()}
 
             <View style={[styles.row, {justifyContent: 'space-evenly', margin: 8}]}>
-                <FontAwesome6 name="pencil" size={32}  color={isTemp ? theme.text : theme.focus } style={styles.symbol} onPress={() => {setIsTemp(!isTemp); setRefresh( refresh + ' ')}}/>
+                <FontAwesome6 name="pencil" size={32}  color={isTemp ? theme.focus : theme.text } style={styles.symbol} onPress={() => {setIsTemp(!isTemp); setRefresh( refresh + ' ')}}/>
                 {!isLock && <AntDesign name="unlock" size={32} color={theme.text} style={styles.symbol} onPress={() => {setIsLock(!isLock)}}/>}
                 {isLock && <AntDesign name="lock" size={32} color={theme.focus} style={styles.symbol} onPress={() => {setIsLock(!isLock)}}/>}
                 <Fontisto name="save-1" size={32} color={theme.text} style={styles.symbol} onPress={() => {saveState()}}/>
