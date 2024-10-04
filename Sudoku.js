@@ -343,8 +343,8 @@ export default function Sudoku({ navigation, route}) {
         else if(box.current !== '-'){
             return(
                 <View>
-                    {(focus== null || focus !== box.id) && <View style={[style, styles.boxWrong]}><Text style={[styles.box, styles.boxWrong, styles.textColor]}>{box.current}</Text></View>}
-                    {focus !== null && focus == box.id && <View style={[style, styles.focus] }><Text style={[styles.box, styles.boxWrong, styles.textColor]}>{box.current}</Text></View>}
+                    {(focus== null || focus !== box.id) && <View style={[style, styles.boxWrong]}><Text style={[styles.box, styles.textColor]}>{box.current}</Text></View>}
+                    {focus !== null && focus == box.id && <View style={[style, styles.focus,styles.boxWrong] }><Text style={[styles.box, styles.boxWrong, styles.textColor]}>{box.current}</Text></View>}
                 </View>
             );
         }
