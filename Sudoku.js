@@ -412,19 +412,25 @@ export default function Sudoku({ navigation, route}) {
     }
 
     // #2B2223 #33292A #584443 #D9A198 #E94F37
+    const theme = {
+        background: '#191919',
+        cellBorder: '#3f3f3f',
+        boxBorder: '#343434',
+        boxBackground: '#575757',
+        focus: '#717171',
+        highlight: '#282828',
+        text: '#DADADA',
+    }
+    
     const windowWidth = Dimensions.get('window').width;
     const boxWidth = (windowWidth)/9.4;
     const styles = StyleSheet.create({
         container: {
-            backgroundColor: '#2B2223',
+            backgroundColor: theme.background,
             height: '100%',
         },
 
         board: {
-            borderColor: 'blue',
-            borderWidth: 0,
-            padding: 0,
-            borderStyle: 'solid',
             alignSelf: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
@@ -432,11 +438,11 @@ export default function Sudoku({ navigation, route}) {
             alignItems: 'center',
         },
         cell: {
-            borderColor: 'black',
+            borderColor: theme.cellBorder,
             borderStyle: 'solid',
-            padding: 1,
+            padding: 0,
             margin: 0,
-            borderWidth: 1,
+            borderWidth: 1.4,
             alignItems: 'center',
             justifyContent: 'center',
             alignSelf: 'center',
@@ -444,10 +450,13 @@ export default function Sudoku({ navigation, route}) {
         boxShell: {
             width: boxWidth,
             height: boxWidth,
-            borderColor: 'grey',
+            borderColor: theme.boxBorder,
+            backgroundColor: theme.boxBackground,
             borderWidth: 1,
+            padding: 0,
             borderStyle: 'solid',
             justifyContent: 'center',
+
         },
         box: {
             fontSize: 20,
@@ -459,18 +468,19 @@ export default function Sudoku({ navigation, route}) {
             flexDirection: 'row',
         },
         highlightBox: {
+            backgroundColor: theme.highlightBox,
             borderWidth: 2,
         },
         focus: {
             borderWidth: 2,
-            borderColor: 'blue',
+            backgroundColor: theme.focus,
         },
         boxWrong: {
             borderColor: 'red',
             color: 'red',
         },
         boxHighlightNum: {
-            borderColor: 'blue',
+            backgroundColor: theme.focus,
             borderWidth: 1,
         },
 
@@ -481,7 +491,7 @@ export default function Sudoku({ navigation, route}) {
         },
         numberBox: {
             borderWidth: 1,
-            borderColor: 'black',
+            borderColor: theme.text,
             paddingHorizontal: 4,
             marginHorizontal: 4,
             marginVertical: 4,
@@ -491,14 +501,15 @@ export default function Sudoku({ navigation, route}) {
         },
         highlightNumber: {
             fontSize: 32,
-            color: 'blue',
+            backgroundColor: theme.focus,
         },
         numberQuantity: {
             justifyContent: 'center',
+            color: theme.text,
         },
         finishedNumber: {
-            borderColor: 'grey',
-            color: 'grey',
+            borderColor: theme.cellBorder,
+            color: theme.cellBorder,
         },
 
         tempRow: {
@@ -516,17 +527,17 @@ export default function Sudoku({ navigation, route}) {
             alignSelf: 'space-evenly',
         },
         highlightTemp: {
-            color: 'blue',
+            color: theme.focus,
         },
 
         textColor: {
-            color: 'white',
+            color: theme.text,
         },
 
     });
     return (
         <View style={styles.container}>
-            {sudoku !== null && <Text>Mistakes: {sudoku.mistakes}</Text>}
+            {sudoku !== null && <Text style={styles.textColor}>Mistakes: {sudoku.mistakes}</Text>}
             {sudoku !== null && displayBoard()}
 
             <View style={[styles.row, {justifyContent: 'space-evenly'}]}>

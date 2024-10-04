@@ -26,7 +26,6 @@ export default function Home() {
             }
           });
 
-        navigation.setOptions();
         if(settings == null){
             const value = AsyncStorage.getItem('settings').then((value) => {
                 if(value == null){ // Make new settings 
