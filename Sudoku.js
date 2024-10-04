@@ -2,6 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, Dimensions } from 'react-native';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Fontisto from '@expo/vector-icons/Fontisto';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import Checkbox from 'expo-checkbox';
 import { getSudoku } from 'sudoku-gen';
 
@@ -236,6 +240,29 @@ export default function Sudoku({ navigation, route}) {
         console.log('Loaded State');
     }
 
+    function displayEmptyBoard(){
+        const emptyBox = {id: 0, current: '-', solution: '0', temp: []};
+        const emptyCell = [emptyBox, emptyBox,emptyBox,emptyBox,emptyBox,emptyBox,emptyBox,emptyBox,emptyBox]
+        return(
+            <View style={styles.board}>
+                <View style={styles.row}>
+                    {displayCell(emptyCell)}
+                    {displayCell(emptyCell)}
+                    {displayCell(emptyCell)}
+                </View>
+                <View style={styles.row}>
+                    {displayCell(emptyCell)}
+                    {displayCell(emptyCell)}
+                    {displayCell(emptyCell)}
+                </View>
+                <View style={styles.row}>
+                    {displayCell(emptyCell)}
+                    {displayCell(emptyCell)}
+                    {displayCell(emptyCell)}
+                </View>
+            </View>
+        );
+    }
     function displayBoard(){
         return(
             <View style={styles.board}>
@@ -368,44 +395,44 @@ export default function Sudoku({ navigation, route}) {
             </View>
         );
     }
-    function displayNumbers(){
+    function displayNumbers(isEmpty){
         return(
             <View style={styles.numbers}>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('1', () => pressNumber(1), sudoku.numbers[0].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[0].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[0].quantity}</Text>
+                    {displayButton('1', () => pressNumber(1), (isEmpty !== undefined || sudoku.numbers[0].quantity>0) ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[0].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[0].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('2', () => pressNumber(2), sudoku.numbers[1].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[1].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[1].quantity}</Text>
+                    {displayButton('2', () => pressNumber(2), (isEmpty !== undefined || sudoku.numbers[1].quantity>0) ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[1].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[1].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('3', () => pressNumber(3), sudoku.numbers[2].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[2].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[2].quantity}</Text>
+                    {displayButton('3', () => pressNumber(3), (isEmpty !== undefined || sudoku.numbers[2].quantity>0 )? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[2].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[2].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('4', () => pressNumber(4), sudoku.numbers[3].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[3].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[3].quantity}</Text>
+                    {displayButton('4', () => pressNumber(4), (isEmpty !== undefined || sudoku.numbers[3].quantity>0) ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[3].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[3].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('5', () => pressNumber(5), sudoku.numbers[4].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[4].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[4].quantity}</Text>
+                    {displayButton('5', () => pressNumber(5), (isEmpty !== undefined || sudoku.numbers[4].quantity>0) ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[4].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[4].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('6', () => pressNumber(6), sudoku.numbers[5].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[5].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[5].quantity}</Text>
+                    {displayButton('6', () => pressNumber(6), (isEmpty !== undefined || sudoku.numbers[5].quantity>0 )? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[5].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[5].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('7', () => pressNumber(7), sudoku.numbers[6].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[6].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[6].quantity}</Text>
+                    {displayButton('7', () => pressNumber(7), (isEmpty !== undefined || sudoku.numbers[6].quantity>0) ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[6].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[6].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('8', () => pressNumber(8), sudoku.numbers[7].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[7].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[7].quantity}</Text>
+                    {displayButton('8', () => pressNumber(8), (isEmpty !== undefined || sudoku.numbers[7].quantity>0) ? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[7].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[7].quantity}</Text>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                    {displayButton('9', () => pressNumber(9), sudoku.numbers[8].quantity>0 ? null : styles.finishedNumber)}
-                    <Text style={[styles.numberQuantity, sudoku.numbers[8].quantity>0 ? null : styles.finishedNumber]}>{sudoku.numbers[8].quantity}</Text>
+                    {displayButton('9', () => pressNumber(9), (isEmpty !== undefined || sudoku.numbers[8].quantity>0 )? null : styles.finishedNumber)}
+                    <Text style={[styles.numberQuantity, (isEmpty !== undefined || sudoku.numbers[8].quantity>0) ? null : styles.finishedNumber]}>{isEmpty !== undefined ? 9 : sudoku.numbers[8].quantity}</Text>
                 </View>
             </View>
         );
@@ -533,31 +560,33 @@ export default function Sudoku({ navigation, route}) {
         textColor: {
             color: theme.text,
         },
+        outsideText: {
+            fontSize: 20,
+            color: theme.text,
+            verticalAlign: 'middle',
+        },
+        symbol: {
+            verticalAlign: 'middle',
+        },
 
     });
     return (
         <View style={styles.container}>
-            {sudoku !== null && <Text style={styles.textColor}>Mistakes: {sudoku.mistakes}</Text>}
+            {sudoku !== null && <Text style={[styles.outsideText, {marginHorizontal: 6}]}>Mistakes: {sudoku.mistakes}</Text>}
+            {sudoku == null && <Text style={[styles.outsideText, {marginHorizontal: 6}]}>Mistakes: 0</Text>}
             {sudoku !== null && displayBoard()}
+            {sudoku == null && displayEmptyBoard()}
 
-            <View style={[styles.row, {justifyContent: 'space-evenly'}]}>
-                <View style={[styles.row]}>
-                    <Text style={[styles.textColor]}>Pencil</Text>
-                    <Checkbox style={styles.checkbox} value={isTemp} onValueChange={(itemValue) => {setIsTemp(itemValue); setRefresh( refresh + ' ')}} />
-                </View>
-                <View style={[styles.row]}>
-                    <Text style={[styles.textColor]}>Lock</Text>
-                    <Checkbox style={styles.checkbox} value={isLock} onValueChange={(itemValue) => {setIsLock(itemValue); setRefresh(refresh + ' ')}} />
-                </View>
-                <View style={[styles.row]}>
-                   {displayButton('Save', ()=>saveState())}
-                </View>
-                <View style={[styles.row]}>
-                   {displayButton('Load', ()=>loadState())}
-                </View>
+            <View style={[styles.row, {justifyContent: 'space-evenly', margin: 8}]}>
+                <FontAwesome6 name="pencil" size={32}  color={isTemp ? theme.text : theme.focus } style={styles.symbol} onPress={() => {setIsTemp(!isTemp); setRefresh( refresh + ' ')}}/>
+                {!isLock && <AntDesign name="unlock" size={32} color={theme.text} style={styles.symbol} onPress={() => {setIsLock(!isLock)}}/>}
+                {isLock && <AntDesign name="lock" size={32} color={theme.focus} style={styles.symbol} onPress={() => {setIsLock(!isLock)}}/>}
+                <Fontisto name="save-1" size={32} color={theme.text} style={styles.symbol} onPress={() => {saveState()}}/>
+                <Ionicons name="document-text-sharp" size={32} style={styles.symbol} color={theme.text} onPress={() => {loadState()}}/>
             </View>
 
             {sudoku !== null && displayNumbers()}
+            {sudoku == null && displayNumbers(true)}
             <StatusBar style="auto" />
         </View>
     );
