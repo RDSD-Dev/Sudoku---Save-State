@@ -492,7 +492,9 @@ export default function App() {
 
       header: {
         marginVertical: 12,
+        marginBottom: 4,
         padding: 8,
+        paddingBottom: 4,
         width: '100&',
       },
       headerText: {
@@ -654,7 +656,7 @@ export default function App() {
       </View>
       <View style={styles.aboveBoard}>
         {sudoku !== null ? <Text style={[styles.outsideText]}>Mistakes: {sudoku.mistakes}</Text> : <Text style={[styles.outsideText]}>Mistakes: 0</Text>}
-        {sudoku !== null ? <Text style={[styles.outsideText]}>{difficulty.label}</Text> : <Text style={[styles.outsideText]}>{difficulty[0].label}</Text>}
+        {difficulty !== null ? <Text style={[styles.outsideText]}>{difficulty.label}</Text> : <Text style={[styles.outsideText]}>{difficulties[0].label}</Text>}
       </View>
       {sudoku !== null && displayBoard()}
       {sudoku == null && displayEmptyBoard()}
