@@ -8,6 +8,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { getSudoku } from 'sudoku-gen';
+import {decodeEntity, decode} from 'html-entities';
 
 export default function App() {
   const difficulties = [
@@ -27,6 +28,7 @@ export default function App() {
   const [isLock, setIsLock] = useState(false);
   const [lockNum, setLockNum] = useState(0);
   const [refresh, setRefresh] = useState('');
+  const [finishStats, setFinishStats] = useState(null);
 
   useEffect(() => {
       if(settings == null){
@@ -64,11 +66,11 @@ export default function App() {
       }
       if(sudoku !== null && sudoku.numbers[0].quantity == 0 && sudoku.numbers[1].quantity == 0 && sudoku.numbers[2].quantity == 0 && sudoku.numbers[3].quantity == 0 && sudoku.numbers[4].quantity == 0 && sudoku.numbers[5].quantity == 0 && sudoku.numbers[6].quantity == 0 && sudoku.numbers[7].quantity == 0  && sudoku.numbers[8].quantity == 0){
           // Game completed
-          navigation.navigate('Success', {difficulty: route.params.difficulty.label});
           setSudoku(null);
           setFocus(null);
           setIsLock(false);
           setLockNum(0);
+          setIsActive(false);
       }
   }, [focus, refresh, lockNum]);
 
@@ -138,6 +140,7 @@ export default function App() {
       }
       else{
           setFocus(null);
+          setHighlightNum(number);
           setHighlighted(null);
           setLockNum(number);
           setRefresh(refresh + ' ');
@@ -496,10 +499,14 @@ export default function App() {
         padding: 8,
         paddingBottom: 4,
         width: '100&',
+        flexDirection: 'row',
+        verticalAlign: 'middle',
       },
       headerText: {
         color: theme.text,
         fontSize: 24,
+        verticalAlign: 'middle',
+        marginRight: 8,
       },
 
       modalView: {
@@ -649,9 +656,15 @@ export default function App() {
       },
 
   });
+  const icons = {
+    Gear: decodeEntity('&#9881;'),
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <Pressable onPress={() => {setIsActive(false)}}>
+            <Text style={[styles.textColor, styles.headerText]}>{icons.Gear}</Text>
+        </Pressable>
         <Text style={[styles.headerText]}>Sudoku </Text>
       </View>
       <View style={styles.aboveBoard}>
@@ -678,13 +691,13 @@ export default function App() {
         visible={!isActive}
       >
         <View style={styles.modalView}>
+            {finishStats !== null && <Text style={styles.textColor}>Done</Text>}
           <Dropdown style={styles.input} selectedTextStyle={styles.dropdownSelected} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
-          {(sudoku !== null && sudoku !== '') && displayButton('Continue', () => {setIsActive(true)})}
-          {displayButton('Sudoku', () => {buildBoard(); setIsActive(true)})}
+          {(sudoku !== null && sudoku !== '' && finishStats == null) && displayButton('Continue', () => {setIsActive(true)})}
+          {displayButton('New Game', () => {buildBoard(); setIsActive(true)})}
         </View>
       </Modal>
       <StatusBar style="auto" />
     </View>
   );
 }
-
