@@ -697,6 +697,7 @@ export default function App() {
           {displayButton('New Game', () => {buildBoard(); setIsActive(true)})}
         </View>
       </Modal>
+      
       <StatusBar style="auto" />
     </View>
   );
