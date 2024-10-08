@@ -694,7 +694,7 @@ export default function App() {
             {finishStats !== null && <Text style={styles.textColor}>Done</Text>}
           <Dropdown style={styles.input} selectedTextStyle={styles.dropdownSelected} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
           {(sudoku !== null && sudoku !== '' && finishStats == null) && displayButton('Continue', () => {setIsActive(true)})}
-          {displayButton('New Game', () => {buildBoard(); setIsActive(true)})}
+          {(difficulty !== null) ? displayButton('New Game', () => {buildBoard(); setIsActive(true)}) : displayButton('New Game', () => {})}
         </View>
       </Modal>
       
