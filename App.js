@@ -38,6 +38,11 @@ export default function App() {
                   const tempSettings = {
                       difficulty: difficulties[0],
                       sudoku: null,
+                      stats: [{difficulty: 'easy', gameQuantity: 0, averageMistakesMade: 0},
+                        {difficulty: 'medium', gameQuantity: 0, averageMistakesMade: 0},
+                        {difficulty: 'hard', gameQuantity: 0, averageMistakesMade: 0},
+                        {difficulty: 'expert', gameQuantity: 0, averageMistakesMade: 0}
+                      ],
                   }
                   saveSettings(tempSettings);
               }
@@ -66,6 +71,17 @@ export default function App() {
       }
       if(sudoku !== null && sudoku.numbers[0].quantity == 0 && sudoku.numbers[1].quantity == 0 && sudoku.numbers[2].quantity == 0 && sudoku.numbers[3].quantity == 0 && sudoku.numbers[4].quantity == 0 && sudoku.numbers[5].quantity == 0 && sudoku.numbers[6].quantity == 0 && sudoku.numbers[7].quantity == 0  && sudoku.numbers[8].quantity == 0){
           // Game completed
+          let tempSettings = settings;
+          const statIndex = tempSettings.stats.findIndex((e) => e.difficulty == difficulty.value);
+          let tempGameQuantity = tempSettings.stats[statIndex].gameQuantity;
+          let tempAverage = tempSettings.stats[statIndex].averageMistakesMade
+          tempAverage = tempAverage * tempGameQuantity;
+          tempAverage = tempAverage + sudoku.mistakes;
+          tempAverage = tempAverage / tempGameQuantity + 1;
+          tempSettings.stats[statIndex].gameQuantity = tempSettings.stats[statIndex].gameQuantity +1;
+          tempSettings.sudoku = null;
+          AsyncStorage.setItem('settings', JSON.stringify(tempSettings));
+          setSettings(tempSettings);
           setSudoku(null);
           setFocus(null);
           setIsLock(false);
@@ -699,6 +715,7 @@ export default function App() {
             {finishStats !== null && <Text style={styles.textColor}>Done</Text>}
             <Text style={[styles.headerText, {marginBottom: 4}]}>Select a difficulty: </Text>
           <Dropdown style={[styles.input, {marginBottom: 48, borderColor: theme.focus, borderWidth: 1, borderRadius: 8, padding: 4}]} containerStyle={{backgroundColor: theme.background, borderRadius: 8, borderWidth: 1, borderColor: theme.cellBorder, color: theme.text}} itemTextStyle={{color: theme.text}} itemContainerStyle={{backgroundColor: theme.highlight, borderRadius: 8}} activeColor={theme.focus} selectedTextStyle={[{color: theme.text, borderRadius: 8, borderColor: theme.text}]} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
+          {(settings !== null) && <Text>{settings.stats[settings.stats.findIndex((e) => e.difficulty == difficulty.value)].averageMistakesMade}</Text>}
           {(sudoku !== null && sudoku !== '' && finishStats == null) && displayButton('Continue', () => {setIsActive(true)}, {borderRadius: 8})}
           {(difficulty !== null) ? displayButton('New Game', () => {buildBoard(); setIsActive(true)}, {borderRadius: 8}) : displayButton('New Game', () => {/**/}, {borderRadius: 8})}
         </View>

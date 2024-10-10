@@ -1,4 +1,1 @@
-Make default theme look good
-Make make screen look good
 Add statistics page
-Change stack screen options to objects and pass references to said objects to the screens.
