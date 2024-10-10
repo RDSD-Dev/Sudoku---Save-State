@@ -494,8 +494,8 @@ export default function App() {
       },
 
       header: {
-        marginVertical: 12,
-        marginBottom: 4,
+        marginVertical: 16,
+        marginBottom: 8,
         padding: 8,
         paddingBottom: 4,
         width: '100&',
@@ -513,10 +513,13 @@ export default function App() {
           margin: 20,
           backgroundColor: theme.highlight,
           borderRadius: 8,
-          padding: 35,
+          borderColor: theme.focus,
+          borderWidth: 8,
+          padding: 36,
           height: '92%',
           alignItems: 'center',
           shadowColor: '#000',
+          justifyContent: 'center',
           shadowOffset: {
             width: 0,
             height: 2,
@@ -541,7 +544,8 @@ export default function App() {
 
       aboveBoard: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginBottom: 4,
       },
 
       board: {
@@ -550,6 +554,7 @@ export default function App() {
           flexDirection: 'column',
           width: '100%',
           alignItems: 'center',
+          marginBottom: 8,
       },
       cell: {
           borderColor: theme.cellBorder,
@@ -674,7 +679,7 @@ export default function App() {
       {sudoku !== null && displayBoard()}
       {sudoku == null && displayEmptyBoard()}
 
-      <View style={[styles.row, {justifyContent: 'space-evenly', margin: 8}]}>
+      <View style={[styles.row, {justifyContent: 'space-evenly', margin: 8, marginBottom: 16}]}>
           <FontAwesome6 name="pencil" size={32}  color={isTemp ? theme.focus : theme.text } style={styles.symbol} onPress={() => {setIsTemp(!isTemp); setRefresh( refresh + ' ')}}/>
           {!isLock && <AntDesign name="unlock" size={32} color={theme.text} style={styles.symbol} onPress={() => {setIsLock(!isLock); setRefresh(refresh + ' ')}}/>}
           {isLock && <AntDesign name="lock" size={32} color={theme.focus} style={styles.symbol} onPress={() => {setIsLock(!isLock); setRefresh('')}}/>}
@@ -692,7 +697,8 @@ export default function App() {
       >
         <View style={styles.modalView}>
             {finishStats !== null && <Text style={styles.textColor}>Done</Text>}
-          <Dropdown style={styles.input} selectedTextStyle={styles.dropdownSelected} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
+            <Text style={[styles.headerText, {marginBottom: 4}]}>Select a difficulty: </Text>
+          <Dropdown style={[styles.input, {marginBottom: 48, borderColor: theme.focus, borderWidth: 1, borderRadius: 8, padding: 4}]} containerStyle={{backgroundColor: theme.background, borderRadius: 8, borderWidth: 1, borderColor: theme.cellBorder, color: theme.text}} itemTextStyle={{color: theme.text}} itemContainerStyle={{backgroundColor: theme.highlight, borderRadius: 8}} activeColor={theme.focus} selectedTextStyle={[{color: theme.text, borderRadius: 8, borderColor: theme.text}]} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
           {(sudoku !== null && sudoku !== '' && finishStats == null) && displayButton('Continue', () => {setIsActive(true)})}
           {(difficulty !== null) ? displayButton('New Game', () => {buildBoard(); setIsActive(true)}) : displayButton('New Game', () => {})}
         </View>
