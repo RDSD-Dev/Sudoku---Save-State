@@ -426,8 +426,8 @@ export default function App() {
   function displayButton(title, onPress, style){
       return(
           <View>
-              {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[style, styles.highlightNumber, styles.textColor]}>{title}</Text></Pressable>}
-              {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox, style]}><Text style={[styles.number, style, styles.textColor]}>{title}</Text></Pressable>}
+              {((title == JSON.stringify(lockNum) || title == lockNum)&& isLock) && <Pressable onPress={onPress} style={[styles.highlightNumber, styles.numberBox, style]}><Text style={[styles.highlightNumber, styles.textColor, style]}>{title}</Text></Pressable>}
+              {((title !== JSON.stringify(lockNum) && title !== lockNum)|| !isLock) && <Pressable onPress={onPress} style={[styles.numberBox, style]}><Text style={[styles.number, styles.textColor, style]}>{title}</Text></Pressable>}
           </View>
       );
   }
@@ -699,8 +699,8 @@ export default function App() {
             {finishStats !== null && <Text style={styles.textColor}>Done</Text>}
             <Text style={[styles.headerText, {marginBottom: 4}]}>Select a difficulty: </Text>
           <Dropdown style={[styles.input, {marginBottom: 48, borderColor: theme.focus, borderWidth: 1, borderRadius: 8, padding: 4}]} containerStyle={{backgroundColor: theme.background, borderRadius: 8, borderWidth: 1, borderColor: theme.cellBorder, color: theme.text}} itemTextStyle={{color: theme.text}} itemContainerStyle={{backgroundColor: theme.highlight, borderRadius: 8}} activeColor={theme.focus} selectedTextStyle={[{color: theme.text, borderRadius: 8, borderColor: theme.text}]} data={difficulties} labelField="label" valueField="value"  value={difficulty} onChange={item => updateDifficulty(item)}/>
-          {(sudoku !== null && sudoku !== '' && finishStats == null) && displayButton('Continue', () => {setIsActive(true)})}
-          {(difficulty !== null) ? displayButton('New Game', () => {buildBoard(); setIsActive(true)}) : displayButton('New Game', () => {})}
+          {(sudoku !== null && sudoku !== '' && finishStats == null) && displayButton('Continue', () => {setIsActive(true)}, {borderRadius: 8})}
+          {(difficulty !== null) ? displayButton('New Game', () => {buildBoard(); setIsActive(true)}, {borderRadius: 8}) : displayButton('New Game', () => {/**/}, {borderRadius: 8})}
         </View>
       </Modal>
       
