@@ -43,11 +43,17 @@ export default function App() {
                         {difficulty: 'hard', gameQuantity: 0, averageMistakesMade: 0},
                         {difficulty: 'expert', gameQuantity: 0, averageMistakesMade: 0}
                       ],
+                      streakNum: 0,
+                      streakDate: null,
                   }
                   saveSettings(tempSettings);
               }
               else{ // Save settings
                   const tempSettings = JSON.parse(value);
+                  if( tempSettings.streakNum > 0 && (Math.abs(tempSettings.streakDate - new Date()) / 3.6e6) > 26){
+                    tempSettings.streakNum = 0;
+                    tempSettings.streakDate = null;
+                  }
                   setSettings(tempSettings);
                   setDifficulty(tempSettings.difficulty);
               }
@@ -81,6 +87,22 @@ export default function App() {
           tempAverage = tempAverage / tempGameQuantity + 1;
           tempSettings.stats[statIndex].gameQuantity = tempGameQuantity +1;
           tempSettings.sudoku = null;
+          const today = new Date();
+
+          if(sudoku.mistakes == 0){
+            if(tempSettings.streakDate == undefined || tempSettings.streakDate == null){
+                tempSettings.streakNum = 1;
+                tempSettings.streakDate = new Date();
+            }
+            else if((Math.abs(tempSettings.streakDate - today) / 3.6e6) <= 26){
+                tempSettings.streakNum++;
+            }
+            else{
+                tempSettings.streakDate = null;
+                tempSettings.streakNum = 0;
+            }
+        }
+
           AsyncStorage.setItem('settings', JSON.stringify(tempSettings));
           setSettings(tempSettings);
           setSudoku(null);
@@ -518,6 +540,7 @@ export default function App() {
         width: '100&',
         flexDirection: 'row',
         verticalAlign: 'middle',
+        justifyContent: 'space-between'
       },
       headerText: {
         color: theme.text,
@@ -685,9 +708,10 @@ export default function App() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={() => {setIsActive(false)}}>
-            <Text style={[styles.textColor, styles.headerText]}>{icons.Gear}</Text>
+            <Text style={[styles.textColor, styles.headerText]}>{icons.Gear}             </Text>
         </Pressable>
         <Text style={[styles.headerText]}>Sudoku </Text>
+        {(settings !== null && settings.streakNum > 0) ? <Text style={[styles.headerText]}>Streak: {settings.streakNum}</Text> : <Text style={[styles.headerText]}>         </Text>}
       </View>
       <View style={styles.aboveBoard}>
         {sudoku !== null ? <Text style={[styles.outsideText]}>Mistakes: {sudoku.mistakes}</Text> : <Text style={[styles.outsideText]}>Mistakes: 0</Text>}
@@ -713,6 +737,7 @@ export default function App() {
         visible={!isActive}
       >
         <View style={styles.modalView}>
+            {settings !== null && settings.streakNum > 0 && <Text style={[styles.textColor, {fontSize: 28, alignSelf: 'center', marginBottom: 32}]}>Flawless Streak: {settings.streakNum}</Text>}
             {finishStats !== null && <View style={{alignSelf: 'center', marginBottom: 16}}>
                 <Text style={[styles.textColor, {fontSize: 16, alignSelf: 'center'}]}>Difficulty Completed: {difficulties.find((e) => e.value == finishStats.difficulty).label}</Text>
                 <Text style={[styles.textColor, {fontSize: 16, alignSelf: 'center'}]}>Mistakes Made: {finishStats.mistakes}</Text>
