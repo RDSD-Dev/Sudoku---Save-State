@@ -9,16 +9,16 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2B2223"
+      "backgroundColor": "#191919"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 5,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#2B2223"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#191919"
       },
       "package": "com.shockedwhistle.SudokuSaveState"
     },
