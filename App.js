@@ -10,6 +10,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { getSudoku } from 'sudoku-gen';
 import {decodeEntity, decode} from 'html-entities';
 
+import mobileAds, { BannerAd } from 'react-native-google-mobile-ads';
+import InlineAd from './inlineAd';
+
+
 export default function App() {
   const difficulties = [
     {label: 'Easy', value: 'easy'},
@@ -31,6 +35,17 @@ export default function App() {
   const [finishStats, setFinishStats] = useState(null);
 
   useEffect(() => {
+    (async () => {
+        // Google AdMob will show any messages here that you just set up on the AdMob Privacy & Messaging page
+        const { status: trackingStatus } = await requestTrackingPermissionsAsync();
+        if (trackingStatus !== 'granted') {
+          // Do something here such as turn off Sentry tracking, store in context/redux to allow for personalized ads, etc.
+        }
+  
+        // Initialize the ads
+        await mobileAds().initialize();
+      })();
+
       if(settings == null){
           const value = AsyncStorage.getItem('settings').then((value) => {
               if(value == null){ // Make new settings 
@@ -55,6 +70,7 @@ export default function App() {
                     tempSettings.streakDate = null;
                   }
                   setSettings(tempSettings);
+                  AsyncStorage.setItem('settings', JSON.stringify(tempSettings));
                   setDifficulty(tempSettings.difficulty);
               }
           });
@@ -700,6 +716,12 @@ export default function App() {
           verticalAlign: 'middle',
       },
 
+      bannerAd: {
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 8,
+      },
+
   });
   const icons = {
     Gear: decodeEntity('&#9881;'),
@@ -752,6 +774,10 @@ export default function App() {
           {(difficulty !== null) ? displayButton('New Game', () => {buildBoard(); setIsActive(true); setFinishStats(null)}, {borderRadius: 8}) : displayButton('New Game', () => {setFinishStats(null)}, {borderRadius: 8})}
         </View>
       </Modal>
+
+        <View style={styles.bannerAd}>
+            < InlineAd />
+        </View>
       
       <StatusBar style="auto" />
     </View>
