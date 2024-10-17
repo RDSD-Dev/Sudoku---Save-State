@@ -114,8 +114,8 @@ export default function App() {
                 tempSettings.streakNum++;
             }
             else{
-                tempSettings.streakDate = null;
-                tempSettings.streakNum = 0;
+                tempSettings.streakDate = new Date();
+                tempSettings.streakNum = 1;
             }
         }
 
